@@ -1,0 +1,5 @@
+vmware:
+  url: 172.10.1.9
+  user: administrator@vsphere.local
+  password: Axzx@2023
+  insecure: true
