@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"net/http" // 新增导入
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -43,29 +43,38 @@ func LoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 }
 
 
-// 跨域中间件
-func CorsMiddleware() gin.HandlerFunc {
+// CORSMiddleware 中间件处理跨域问题
+func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// 允许的源，生产环境建议替换为你的前端域名，例如 "http://localhost:3000"
-		// 使用 "*" 表示允许任何源，这在开发时很方便
-		c.Header("Access-Control-Allow-Origin", "*")
-		// 允许的方法
-		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		// 允许的请求头，确保包含了前端可能发送的所有自定义头部，特别是 'Authorization' 和 'Content-Type'
-		c.Header("Access-Control-Allow-Headers", "DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,token")
-		// 暴露给前端的响应头，如果前端需要读取非简单响应头之外的头部，在此列出
-		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-		// 是否允许发送 Cookie 等凭证信息
-		c.Header("Access-Control-Allow-Credentials", "true")
+		// 获取日志记录器实例
 
-		// 预检请求 (OPTIONS) 的处理
-		// 浏览器在发送实际的跨域请求前，会先发送一个 OPTIONS 请求来询问服务器是否允许该跨域请求
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(http.StatusNoContent) // 对于 OPTIONS 请求，返回 204 No Content 状态码
-			return                                  // 并终止后续处理
+		// 当 Access-Control-Allow-Credentials 为 true 时，Access-Control-Allow-Origin 不能是 "*"
+		// 必须是请求的实际来源
+		origin := c.Request.Header.Get("Origin")
+		if origin != "" {
+			// 直接设置响应头
+			c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+			c.Writer.Header().Set("Vary", "Origin") // 添加Vary头，告诉缓存服务器根据Origin变化响应
+		} else {
+			// 如果没有Origin头，设置为通配符
+			c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		}
 
-		// 处理实际的请求
-		c.Next() // 将请求传递给后续的处理函数
+		// 直接设置响应头
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Max-Age", "86400") // 预检请求结果缓存24小时
+
+
+		// 处理预检请求
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+			return
+		}
+
+		// 处理实际请求
+		c.Next()
+
 	}
 }

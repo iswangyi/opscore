@@ -364,7 +364,9 @@ export default function ClustersPage() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="kubeconfig">Kubeconfig 文件</Label>
+
               <Input id="kubeconfig" type="file" accept=".yaml,.yml,.json,.txt" onChange={handleFileChange} />
+
               <p className="text-sm text-muted-foreground">上传包含集群连接信息的 kubeconfig 文件</p>
             </div>
           </div>

@@ -3,15 +3,23 @@ package router
 import (
 	"net/http"
 	"opscore/internal/api" // 确保 api 包被导入
+	"opscore/internal/middleware"
 	"github.com/gin-gonic/gin"
+	"opscore/internal/log"
 )
 
 var db = make(map[string]string) // 这个db似乎是示例代码，与k8s无关
 
 func SetupRouter() *gin.Engine {
+	logger := log.GetLogger() 
+
 	// Disable Console Color
 	// gin.DisableConsoleColor()
 	r := gin.Default()
+
+	// Cors 中间件
+	r.Use(middleware.LoggerMiddleware(logger))
+	r.Use(middleware.CORSMiddleware())
 
 
 	// Ping test

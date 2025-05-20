@@ -6,8 +6,7 @@ import (
 	"opscore/internal/db"
 	"opscore/internal/kubernetes"
 	"opscore/internal/log"
-	"opscore/internal/middleware"
-	"opscore/router"
+	"opscore/internal/router"
 	"os"
 )
 
@@ -50,8 +49,6 @@ func main() {
 	go config.WatchConfigChange(logger)
 
 	r := router.SetupRouter()
-	r.Use(middleware.LoggerMiddleware(logger))
-	r.Use(middleware.CorsMiddleware())
 
 	// Listen and Server in 0.0.0.0:8080
 	r.Run(":8080")
