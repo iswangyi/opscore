@@ -2,16 +2,17 @@ package router
 
 import (
 	"net/http"
-	"opscore/internal/api"
+	"opscore/internal/api" // 确保 api 包被导入
 	"github.com/gin-gonic/gin"
 )
 
-var db = make(map[string]string)
+var db = make(map[string]string) // 这个db似乎是示例代码，与k8s无关
 
 func SetupRouter() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
 	r := gin.Default()
+
 
 	// Ping test
 	r.GET("/ping", func(c *gin.Context) {
@@ -64,8 +65,27 @@ func SetupRouter() *gin.Engine {
 		}
 	})
 
+	// Kubernetes 集群管理 API 路由组
+	// 根据前端 api.js, 路径是 /clusters
+	k8sClusterRoutes := r.Group("/clusters")
+	{
+		// POST /clusters - 添加一个新的 Kubernetes 集群
+		// 使用我们重构后的 api.AddK8sClusterHandler
+		k8sClusterRoutes.POST("", api.AddK8sClusterHandler)
+
+		// GET /clusters - 获取所有 Kubernetes 集群的列表
+		k8sClusterRoutes.GET("", api.ListK8sClustersHandler)
+
+		// 未来可以添加其他集群相关的路由:
+		// k8sClusterRoutes.GET("/:clusterId", api.GetK8sClusterHandler)
+		// k8sClusterRoutes.PUT("/:clusterId", api.UpdateK8sClusterHandler)
+		// k8sClusterRoutes.DELETE("/:clusterId", api.DeleteK8sClusterHandler)
+		// k8sClusterRoutes.POST("/:clusterId/test", api.TestK8sClusterConnectionHandler) // 前端已有mock
+	}
+
+	// VMware 路由示例 (来自现有代码)
 	unauthorized := r.Group("/vmware")
-	unauthorized.GET("list",api.GetVMwareMachine)
+	unauthorized.GET("list", api.GetVMwareMachine)
 
 	return r
 }

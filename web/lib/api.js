@@ -3,7 +3,7 @@
  */
 
 // 基础 API URL，实际项目中应从环境变量获取
-const API_BASE_URL = "http://172.27.153.18:8080/vmware/list/api"
+const API_BASE_URL = "http://localhost:8080"; // 修改为您的后端服务地址
 
 // 模拟数据，用于在没有后端服务时提供数据
 const MOCK_DATA = {
@@ -215,7 +215,7 @@ async function fetchAPI(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`
 
   // 检查是否使用模拟数据
-  const useMockData = true // 在实际项目中，可以根据环境变量设置
+  const useMockData = false // 在实际项目中，可以根据环境变量设置
 
   if (useMockData) {
     console.log(`[模拟 API] ${options.method || "GET"} ${endpoint}`)
