@@ -281,7 +281,7 @@ export default function KubernetesPage() {
           </Select>
 
           <Select value={selectedNamespace} onValueChange={handleNamespaceChange}>
-            <SelectTrigger className="w-full sm:w-[600px]">
+            <SelectTrigger className="w-full sm:w-[400px]">
               <SelectValue placeholder="选择命名空间" />
             </SelectTrigger>
             <SelectContent>
