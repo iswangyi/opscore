@@ -8,8 +8,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { MoreVertical, RefreshCw, CheckCircle2, AlertTriangle, XCircle } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { kubernetesAPI } from "@/lib/api"
+import { CommandEmpty } from "cmdk"
 
 export function PodsList({ clusterId, namespace, pods, isLoading, onRefresh }) {
+  console.log("pods",pods)
   const { toast } = useToast()
   const [expandedPod, setExpandedPod] = useState(null)
 
@@ -90,20 +92,20 @@ export function PodsList({ clusterId, namespace, pods, isLoading, onRefresh }) {
             <TableHead className="hidden md:table-cell">节点</TableHead>
             <TableHead className="hidden md:table-cell">CPU</TableHead>
             <TableHead className="hidden md:table-cell">内存</TableHead>
-            <TableHead>存活时间</TableHead>
+            <TableHead>创建时间</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {isLoading ? (
-            <TableRow>
+            <TableRow key="empty-key">
               <TableCell colSpan={8} className="text-center py-4 text-muted-foreground">
                 <RefreshCw className="h-5 w-5 animate-spin mx-auto" />
                 <span className="mt-2 block">加载中...</span>
               </TableCell>
             </TableRow>
-          ) : pods.length === 0 ? (
-            <TableRow>
+          ) : (!pods|| pods.length === 0) ? (
+            <TableRow key="empty-key1">
               <TableCell colSpan={8} className="text-center py-4 text-muted-foreground">
                 未找到匹配的 Pod 资源
               </TableCell>
@@ -116,7 +118,7 @@ export function PodsList({ clusterId, namespace, pods, isLoading, onRefresh }) {
                 <TableCell>
                   <StatusBadge status={pod.status} />
                 </TableCell>
-                <TableCell className="hidden md:table-cell">{pod.node}</TableCell>
+                <TableCell className="hidden md:table-cell">{pod.nodename}</TableCell>
                 <TableCell className="hidden md:table-cell">{pod.cpu}</TableCell>
                 <TableCell className="hidden md:table-cell">{pod.memory}</TableCell>
                 <TableCell>{pod.age}</TableCell>

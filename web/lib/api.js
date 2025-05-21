@@ -458,7 +458,7 @@ export const kubernetesAPI = {
   getNamespaces: (clusterId) => fetchAPI(`/kubernetes/${clusterId}/namespaces`),
 
   // 获取 Pod 列表
-  getPods: (clusterId, namespace = "default") => fetchAPI(`/kubernetes/${clusterId}/namespaces/${namespace}/pods`),
+  getPods: (clusterId, namespace = "default") => fetchAPI(`/kubernetes/listpods?namespace=${namespace}&clusterId=${clusterId}`),
 
   // 获取 Deployment 列表
   getDeployments: (clusterId, namespace = "default") =>

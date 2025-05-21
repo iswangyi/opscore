@@ -46,7 +46,7 @@ export function ServicesList({ clusterId, namespace, services, isLoading, onRefr
             <TableHead className="hidden md:table-cell">集群 IP</TableHead>
             <TableHead className="hidden md:table-cell">外部 IP</TableHead>
             <TableHead>端口</TableHead>
-            <TableHead>存活时间</TableHead>
+            <TableHead>创建时间</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>

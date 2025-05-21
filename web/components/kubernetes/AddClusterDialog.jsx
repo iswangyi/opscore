@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea"; // 假设您有 Textarea 组件
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { kubernetesAPI } from "@/lib/api"; // 假设 API 调用在这里处理
 import { useToast } from "@/hooks/use-toast";
+import { clustersAPI } from "@/lib/api";
 
 export function AddClusterDialog({ onSuccess }) {
   const { toast } = useToast();
@@ -14,7 +14,6 @@ export function AddClusterDialog({ onSuccess }) {
   const [kubeConfig, setKubeConfig] = useState(""); // 用于绑定 textarea 的值
   const [isLoading, setIsLoading] = useState(false);
 
-  // 移除处理文件上传的函数，例如 handleFileChange
 
   const handleSubmit = async () => {
     if (!clusterName.trim() || !kubeConfig.trim()) {
@@ -33,14 +32,19 @@ export function AddClusterDialog({ onSuccess }) {
         comment: comment,
         kube_config: kubeConfig, // 直接使用 textarea 的内容
       };
+
+      console.log("Adding cluster with data:", clusterData);
+
       // 假设这是您的 API 调用函数
-      await kubernetesAPI.add(clusterData); 
+      await clustersAPI.add(clusterData);
       toast({
         title: "成功",
         description: "集群已成功添加。",
       });
       if (onSuccess) onSuccess();
     } catch (error) {
+      console.error("Error adding cluster:", error);
+
       toast({
         title: "添加集群失败",
         description: error.message || "发生未知错误。",
@@ -73,7 +77,6 @@ export function AddClusterDialog({ onSuccess }) {
         />
       </div>
 
-      {/* 将文件输入替换为 Textarea */}
       <div className="grid gap-2">
         <Label htmlFor="kubeconfig">KubeConfig</Label>
         <Textarea
@@ -81,13 +84,13 @@ export function AddClusterDialog({ onSuccess }) {
           value={kubeConfig}
           onChange={(e) => setKubeConfig(e.target.value)}
           placeholder="在此处粘贴您的 KubeConfig YAML 内容..."
-          rows={10} // 您可以根据需要调整行数
+          rows={15} // 您可以根据需要调整行数
           className="font-mono" // 可选：使用等宽字体以获得更好的 KubeConfig 可读性
         />
       </div>
       
       <Button onClick={handleSubmit} disabled={isLoading} className="mt-4">
-        {isLoading ? "添加中..." : "添加集群"}
+          {isLoading ? "添加中..." : "添加集群"}
       </Button>
     </div>
   );

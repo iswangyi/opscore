@@ -42,7 +42,7 @@ export function ConfigMapsList({ clusterId, namespace, configMaps, isLoading, on
             <TableHead>名称</TableHead>
             <TableHead>命名空间</TableHead>
             <TableHead>数据</TableHead>
-            <TableHead>存活时间</TableHead>
+            <TableHead>创建时间</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>

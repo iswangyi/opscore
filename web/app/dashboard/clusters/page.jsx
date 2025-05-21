@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
+import { AddClusterDialog } from "@/components/kubernetes/AddClusterDialog"
 import {
   Dialog,
   DialogContent,
@@ -73,76 +74,9 @@ export default function ClustersPage() {
     }
   }
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        try {
-          const content = event.target.result
 
-          // 设置 kubeconfig 内容
-          setNewCluster({
-            ...newCluster,
-            kubeconfig: content,
-          })
 
-          toast({
-            title: "Kubeconfig 文件已加载",
-            description: "文件已成功加载，准备添加集群",
-          })
-        } catch (error) {
-          toast({
-            title: "无效的 Kubeconfig 文件",
-            description: error.message,
-            variant: "destructive",
-          })
-        }
-      }
-      reader.readAsText(file)
-    }
-  }
 
-  const handleAddCluster = async () => {
-    if (!newCluster.name || !newCluster.kubeconfig) {
-      toast({
-        title: "无法添加集群",
-        description: "集群名称和 Kubeconfig 文件是必需的",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setIsUploading(true)
-
-    try {
-      // 调用后端 API 添加集群
-      const addedCluster = await clustersAPI.add(newCluster)
-
-      // 更新集群列表
-      setClusters([...clusters, addedCluster])
-
-      // 重置表单
-      setNewCluster({ name: "", description: "", kubeconfig: null })
-      setIsAddingCluster(false)
-
-      toast({
-        title: "集群已添加",
-        description: `集群 "${addedCluster.name}" 已成功添加`,
-      })
-
-      // 保存到本地存储（仅用于演示）
-      localStorage.setItem("k8s-clusters", JSON.stringify([...clusters, addedCluster]))
-    } catch (error) {
-      toast({
-        title: "添加集群失败",
-        description: error.message,
-        variant: "destructive",
-      })
-    } finally {
-      setIsUploading(false)
-    }
-  }
 
   const deleteCluster = async (clusterId) => {
     try {
@@ -223,30 +157,48 @@ export default function ClustersPage() {
   }
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat("zh-CN", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date)
+    console.log("formatDate", dateString);
+
+    if (!dateString) return "-";
+    
+    try {
+      const date = new Date(dateString);
+      
+      // 检查日期是否有效
+      if (isNaN(date.getTime())) {
+        console.warn("Invalid date:", dateString);
+        return "-";
+      }
+  
+      return new Intl.DateTimeFormat("zh-CN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false, // 使用24小时制
+        timeZone: "Asia/Shanghai" // 指定时区为中国时区
+      }).format(date);
+    } catch (error) {
+      console.error("Date formatting error:", error);
+      return "-";
+    }
   }
 
   const getStatusBadge = (status) => {
     switch (status) {
       case "connected":
-        return <Badge variant="success">已连接</Badge>
+        return <Badge>已连接</Badge>
       case "error":
         return <Badge variant="destructive">连接错误</Badge>
       case "testing":
         return (
-          <Badge variant="outline" className="animate-pulse">
+          <Badge variant="secondary">
             测试中...
           </Badge>
         )
       default:
-        return <Badge variant="secondary">待连接</Badge>
+        return <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white">待连接</Badge>
     }
   }
 
@@ -286,6 +238,7 @@ export default function ClustersPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>ID</TableHead>
                 <TableHead>集群名称</TableHead>
                 <TableHead>状态</TableHead>
                 <TableHead className="hidden md:table-cell">描述</TableHead>
@@ -297,10 +250,11 @@ export default function ClustersPage() {
             <TableBody>
               {clusters.map((cluster) => (
                 <TableRow key={cluster.id}>
-                  <TableCell className="font-medium">{cluster.name}</TableCell>
+                  <TableCell className="font-medium">{cluster.id}</TableCell>
+                  <TableCell className="font-medium">{cluster.cluster_name}</TableCell>
                   <TableCell>{getStatusBadge(cluster.status)}</TableCell>
-                  <TableCell className="hidden md:table-cell">{cluster.description || "-"}</TableCell>
-                  <TableCell className="hidden md:table-cell">{formatDate(cluster.addedAt)}</TableCell>
+                  <TableCell className="hidden md:table-cell">{cluster.comment || "-"}</TableCell>
+                  <TableCell className="hidden md:table-cell">{formatDate(cluster.added_at)}</TableCell>
                   <TableCell className="hidden md:table-cell">
                     {testResults[cluster.id]?.version || cluster.version || "-"}
                   </TableCell>
@@ -341,44 +295,14 @@ export default function ClustersPage() {
         <DialogContent className="sm:max-w-[525px]">
           <DialogHeader>
             <DialogTitle>添加 Kubernetes 集群</DialogTitle>
-            <DialogDescription>上传 kubeconfig 文件以连接到您的 Kubernetes 集群</DialogDescription>
+            <DialogDescription>粘贴您的 kubeconfig 内容以连接到 Kubernetes 集群</DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="cluster-name">集群名称</Label>
-              <Input
-                id="cluster-name"
-                placeholder="生产集群"
-                value={newCluster.name}
-                onChange={(e) => setNewCluster({ ...newCluster, name: e.target.value })}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="cluster-description">描述 (可选)</Label>
-              <Input
-                id="cluster-description"
-                placeholder="生产环境 Kubernetes 集群"
-                value={newCluster.description}
-                onChange={(e) => setNewCluster({ ...newCluster, description: e.target.value })}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="kubeconfig">Kubeconfig 文件</Label>
-
-              <Input id="kubeconfig" type="file" accept=".yaml,.yml,.json,.txt" onChange={handleFileChange} />
-
-              <p className="text-sm text-muted-foreground">上传包含集群连接信息的 kubeconfig 文件</p>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddingCluster(false)}>
-              取消
-            </Button>
-            <Button onClick={handleAddCluster} disabled={isUploading}>
-              {isUploading ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-              添加集群
-            </Button>
-          </DialogFooter>
+          <AddClusterDialog 
+            onSuccess={() => {
+              setIsAddingCluster(false);
+              fetchClusters(); // 刷新集群列表
+            }} 
+          />
         </DialogContent>
       </Dialog>
 

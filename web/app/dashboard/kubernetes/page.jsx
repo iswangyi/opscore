@@ -122,8 +122,9 @@ export default function KubernetesPage() {
     setIsLoading(true)
     try {
       // 调用后端 API 获取命名空间列表
-      const data = await kubernetesAPI.getNamespaces(selectedCluster.id)
-      setNamespaces(data)
+      const resp = await kubernetesAPI.getNamespaces(selectedCluster.id)
+      console.log("resp", resp)
+      setNamespaces(resp.data)
     } catch (error) {
       toast({
         title: "获取命名空间失败",
@@ -154,7 +155,7 @@ export default function KubernetesPage() {
       switch (selectedTab) {
         case "pods":
           data = await kubernetesAPI.getPods(selectedCluster.id, selectedNamespace)
-          setResources((prev) => ({ ...prev, pods: data }))
+          setResources((prev) => ({ ...prev, pods: data.data }))
           break
         case "deployments":
           data = await kubernetesAPI.getDeployments(selectedCluster.id, selectedNamespace)
@@ -199,7 +200,6 @@ export default function KubernetesPage() {
   // 过滤资源
   const getFilteredResources = (resourceType) => {
     const resourceList = resources[resourceType] || []
-
     if (!searchTerm) return resourceList
 
     return resourceList.filter(
@@ -268,26 +268,26 @@ export default function KubernetesPage() {
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex flex-col sm:flex-row gap-2 w-full">
           <Select value={selectedCluster?.id} onValueChange={handleClusterChange}>
-            <SelectTrigger className="w-full sm:w-[200px]">
+            <SelectTrigger className="w-full sm:w-[400px]">
               <SelectValue placeholder="选择集群" />
             </SelectTrigger>
             <SelectContent>
               {clusters.map((cluster) => (
                 <SelectItem key={cluster.id} value={cluster.id}>
-                  {cluster.name}
+                  {cluster.cluster_name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
           <Select value={selectedNamespace} onValueChange={handleNamespaceChange}>
-            <SelectTrigger className="w-full sm:w-[200px]">
+            <SelectTrigger className="w-full sm:w-[600px]">
               <SelectValue placeholder="选择命名空间" />
             </SelectTrigger>
             <SelectContent>
               {namespaces.map((ns) => (
-                <SelectItem key={ns.name} value={ns.name}>
-                  {ns.name}
+                <SelectItem key={ns} value={ns}>
+                  {ns}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -18,6 +18,9 @@ import (
 // NewK8sClient 根据提供的 kubeconfig 字符串创建一个新的 Kubernetes Clientset。
 func NewK8sClient(kubeconfigData string) (*kubernetes.Clientset, error) {
 	logger := log.GetLogger() // 获取日志记录器实例
+	logger.Info("开始创建 Kubernetes Clientset")
+	logger.Info("kubeconfigData", zap.String("kubeconfigData", kubeconfigData))
+	
 
 	// 将 kubeconfig 字符串转换为字节数组
 	kubeconfigBytes := []byte(kubeconfigData)

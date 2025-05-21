@@ -47,7 +47,7 @@ func AddK8sClusterHandler(c *gin.Context) {
 func ListK8sClustersHandler(c *gin.Context) {
 	logger := log.GetLogger()
 
-	clusterMetadatas, err := kubernetes.GetAllClusters() // 调用新的数据库函数
+	clusterMetadatas, err := kubernetes.GetAllClusters() 
 	if err != nil {
 		logger.Error("从数据库获取集群失败", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "检索集群失败: " + err.Error()})
@@ -72,3 +72,4 @@ func ListK8sClustersHandler(c *gin.Context) {
 	logger.Info("成功检索到Kubernetes集群列表", zap.Int("count", len(responses)))
 	c.JSON(http.StatusOK, responses)
 }
+

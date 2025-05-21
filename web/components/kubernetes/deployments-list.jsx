@@ -244,7 +244,7 @@ export function DeploymentsList({ clusterId, namespace, deployments, isLoading, 
               <TableHead>副本</TableHead>
               <TableHead>状态</TableHead>
               <TableHead className="hidden md:table-cell">镜像</TableHead>
-              <TableHead>存活时间</TableHead>
+              <TableHead>创建时间</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>

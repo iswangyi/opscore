@@ -2,10 +2,12 @@ package router
 
 import (
 	"net/http"
-	"opscore/internal/api" // 确保 api 包被导入
-	"opscore/internal/middleware"
-	"github.com/gin-gonic/gin"
+	kubeapi "opscore/internal/api/kubeapi" 
+	 "opscore/internal/api"
 	"opscore/internal/log"
+	"opscore/internal/middleware"
+
+	"github.com/gin-gonic/gin"
 )
 
 var db = make(map[string]string) // 这个db似乎是示例代码，与k8s无关
@@ -79,10 +81,10 @@ func SetupRouter() *gin.Engine {
 	{
 		// POST /clusters - 添加一个新的 Kubernetes 集群
 		// 使用我们重构后的 api.AddK8sClusterHandler
-		k8sClusterRoutes.POST("", api.AddK8sClusterHandler)
+		k8sClusterRoutes.POST("", kubeapi.AddK8sClusterHandler)
 
 		// GET /clusters - 获取所有 Kubernetes 集群的列表
-		k8sClusterRoutes.GET("", api.ListK8sClustersHandler)
+		k8sClusterRoutes.GET("", kubeapi.ListK8sClustersHandler)
 
 		// 未来可以添加其他集群相关的路由:
 		// k8sClusterRoutes.GET("/:clusterId", api.GetK8sClusterHandler)
@@ -90,6 +92,20 @@ func SetupRouter() *gin.Engine {
 		// k8sClusterRoutes.DELETE("/:clusterId", api.DeleteK8sClusterHandler)
 		// k8sClusterRoutes.POST("/:clusterId/test", api.TestK8sClusterConnectionHandler) // 前端已有mock
 	}
+
+	kubernetesRoutes := r.Group("/kubernetes")
+	{
+		// GET /kubernetes/namespaces - 获取所有命名空间
+		kubernetesRoutes.GET("/:clusterID/namespaces", kubeapi.GetNamespaces)
+		kubernetesRoutes.GET("/listpods",kubeapi.GetPodsInNamespace)
+		//kubernetesRoutes.GET("/namespaces/:namespace/services", kubernetes.GetServicesInNamespace)
+		//kubernetesRoutes.GET("/namespaces/:namespace/deployments", kubernetes.GetDeploymentsInNamespace)
+		//kubernetesRoutes.GET("/namespaces/:namespace/statefulsets", kubernetes.GetStatefulSetsInNamespace)
+		//kubernetesRoutes.GET("/namespaces/:namespace/daemonsets", kubernetes.GetDaemonSetsInNamespace)
+		//kubernetesRoutes.GET("/namespaces/:namespace/jobs", kubernetes.GetJobsInNamespace)
+		//kubernetesRoutes.GET("/namespaces/:namespace/cronjobs", kubernetes.GetCronJobsInNamespace)
+	}
+
 
 	// VMware 路由示例 (来自现有代码)
 	unauthorized := r.Group("/vmware")
