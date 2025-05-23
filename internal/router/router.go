@@ -86,6 +86,8 @@ func SetupRouter() *gin.Engine {
 		// GET /clusters - 获取所有 Kubernetes 集群的列表
 		k8sClusterRoutes.GET("", kubeapi.ListK8sClustersHandler)
 
+		//导出yaml
+		k8sClusterRoutes.POST("/export-yaml", kubeapi.ExportResourcesHandler)
 		// 未来可以添加其他集群相关的路由:
 		// k8sClusterRoutes.GET("/:clusterId", api.GetK8sClusterHandler)
 		// k8sClusterRoutes.PUT("/:clusterId", api.UpdateK8sClusterHandler)

@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 	"time"
-
+	//"io/ioutil"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -19,6 +19,17 @@ func LoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 		query := c.Request.URL.RawQuery
 		method := c.Request.Method
 		clientIP := c.ClientIP()
+		// 获取请求体
+		//requestBody := c.Request.Body
+		// 读取请求体内容
+		//bodyBytes, err := ioutil.ReadAll(requestBody)
+		//if err != nil {
+		//	logger.Error("Failed to read request body", zap.Error(err))
+		//	c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Failed to read request body"})
+		//	return
+		//}
+		//bodyString := string(bodyBytes)
+
 
 		// 处理请求
 		c.Next()
@@ -38,7 +49,9 @@ func LoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 			zap.Int("status_code", statusCode),
 			zap.Duration("latency", latency),
 			zap.String("user_agent", c.Request.UserAgent()),
+			//zap.String("request_body", bodyString),
 		)
+
 	}
 }
 

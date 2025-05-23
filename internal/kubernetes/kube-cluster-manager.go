@@ -19,7 +19,6 @@ import (
 func NewK8sClient(kubeconfigData string) (*kubernetes.Clientset, error) {
 	logger := log.GetLogger() // 获取日志记录器实例
 	logger.Info("开始创建 Kubernetes Clientset")
-	logger.Info("kubeconfigData", zap.String("kubeconfigData", kubeconfigData))
 	
 
 	// 将 kubeconfig 字符串转换为字节数组

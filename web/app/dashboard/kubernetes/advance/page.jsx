@@ -12,7 +12,9 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/hooks/use-toast"
 import { clustersAPI, kubernetesAPI } from "@/lib/api"
-import { Download, FileJson, Package, List, RefreshCw, Copy, Check, AlertCircle } from "lucide-react"
+import { Download, FileJson, Package, List, RefreshCw, Copy, Check, AlertCircle, Eye, X } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { YamlPreview } from "@/components/kubernetes/yaml-preview"
 
 export default function AdvancedKubernetesPage() {
     const { toast } = useToast()
@@ -28,6 +30,8 @@ export default function AdvancedKubernetesPage() {
     const [packageUrl, setPackageUrl] = useState("")
     const [copied, setCopied] = useState(false)
     const [activeTab, setActiveTab] = useState("export-yaml")
+    const [yamlPreview, setYamlPreview] = useState([])
+    const [previewVisible, setPreviewVisible] = useState(false)
 
     // 加载集群列表
     useEffect(() => {
@@ -92,6 +96,17 @@ export default function AdvancedKubernetesPage() {
         }
     }
 
+    const [selectedResourceTypes, setSelectedResourceTypes] = useState({
+        deployments: true,
+        statefulsets: true,
+        services: true,
+        secrets: true,
+        pvcs: true,
+        pvs: true,
+        cronjobs: true,
+        jobs: true
+    })
+
     // 导出当前命名空间所有 YAML
     const exportAllYaml = async () => {
         if (!selectedCluster || !selectedNamespace) {
@@ -103,16 +118,45 @@ export default function AdvancedKubernetesPage() {
             return
         }
 
+        // 检查是否至少选择了一种资源类型
+        const hasSelectedTypes = Object.values(selectedResourceTypes).some(value => value);
+        if (!hasSelectedTypes) {
+            toast({
+                title: "无法导出 YAML",
+                description: "请至少选择一种资源类型",
+                variant: "destructive",
+            })
+            return;
+        }
+
         setIsLoading(true)
         setExportedYaml("")
         try {
             // 调用后端 API 导出 YAML
-            const response = await kubernetesAPI.exportNamespaceYaml(selectedCluster.id, selectedNamespace)
-            setExportedYaml(response.yaml || "# 没有资源")
-            toast({
-                title: "YAML 导出成功",
-                description: `已导出命名空间 ${selectedNamespace} 的所有资源`,
-            })
+            const response = await kubernetesAPI.exportNamespaceYaml(
+                selectedCluster.id, 
+                selectedNamespace,
+                Object.keys(selectedResourceTypes).filter(key => selectedResourceTypes[key])
+            )
+
+            
+            // 如果有YAML内容，则设置YAML内容并显示预览
+            if (response.data) {
+                setExportedYaml(response.data)
+                setPreviewVisible(true)
+                
+                toast({
+                    title: "YAML 导出成功",
+                    description: `已导出命名空间 ${selectedNamespace} 的所选资源`,
+                });
+            } else {
+                setExportedYaml("# 没有资源");
+                toast({
+                    title: "未找到资源",
+                    description: "所选命名空间中没有符合条件的资源",
+                    variant: "warning",
+                });
+            }
         } catch (error) {
             toast({
                 title: "导出 YAML 失败",
@@ -324,7 +368,111 @@ export default function AdvancedKubernetesPage() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <div className="flex justify-between">
+                            <div className="grid grid-cols-2 gap-4 mb-4">
+                                <div className="space-y-2">
+                                    <Label>选择资源类型</Label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox 
+                                                id="deployments" 
+                                                checked={selectedResourceTypes.deployments}
+                                                onCheckedChange={(checked) => 
+                                                    setSelectedResourceTypes({...selectedResourceTypes, deployments: !!checked})
+                                                }
+                                            />
+                                            <label htmlFor="deployments" className="text-sm font-medium">
+                                                Deployments
+                                            </label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox 
+                                                id="statefulsets" 
+                                                checked={selectedResourceTypes.statefulsets}
+                                                onCheckedChange={(checked) => 
+                                                    setSelectedResourceTypes({...selectedResourceTypes, statefulsets: !!checked})
+                                                }
+                                            />
+                                            <label htmlFor="statefulsets" className="text-sm font-medium">
+                                                StatefulSets
+                                            </label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox 
+                                                id="services" 
+                                                checked={selectedResourceTypes.services}
+                                                onCheckedChange={(checked) => 
+                                                    setSelectedResourceTypes({...selectedResourceTypes, services: !!checked})
+                                                }
+                                            />
+                                            <label htmlFor="services" className="text-sm font-medium">
+                                                Services
+                                            </label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox 
+                                                id="secrets" 
+                                                checked={selectedResourceTypes.secrets}
+                                                onCheckedChange={(checked) => 
+                                                    setSelectedResourceTypes({...selectedResourceTypes, secrets: !!checked})
+                                                }
+                                            />
+                                            <label htmlFor="secrets" className="text-sm font-medium">
+                                                Secrets
+                                            </label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox 
+                                                id="pvcs" 
+                                                checked={selectedResourceTypes.pvcs}
+                                                onCheckedChange={(checked) => 
+                                                    setSelectedResourceTypes({...selectedResourceTypes, pvcs: !!checked})
+                                                }
+                                            />
+                                            <label htmlFor="pvcs" className="text-sm font-medium">
+                                                PVCs
+                                            </label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox 
+                                                id="pvs" 
+                                                checked={selectedResourceTypes.pvs}
+                                                onCheckedChange={(checked) => 
+                                                    setSelectedResourceTypes({...selectedResourceTypes, pvs: !!checked})
+                                                }
+                                            />
+                                            <label htmlFor="pvs" className="text-sm font-medium">
+                                                PVs
+                                            </label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox 
+                                                id="cronjobs" 
+                                                checked={selectedResourceTypes.cronjobs}
+                                                onCheckedChange={(checked) => 
+                                                    setSelectedResourceTypes({...selectedResourceTypes, cronjobs: !!checked})
+                                                }
+                                            />
+                                            <label htmlFor="cronjobs" className="text-sm font-medium">
+                                                CronJobs
+                                            </label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox 
+                                                id="jobs" 
+                                                checked={selectedResourceTypes.jobs}
+                                                onCheckedChange={(checked) => 
+                                                    setSelectedResourceTypes({...selectedResourceTypes, jobs: !!checked})
+                                                }
+                                            />
+                                            <label htmlFor="jobs" className="text-sm font-medium">
+                                                Jobs
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="flex space-x-2">
                                 <Button
                                     onClick={exportAllYaml}
                                     disabled={isLoading || !selectedCluster || !selectedNamespace}
@@ -341,6 +489,16 @@ export default function AdvancedKubernetesPage() {
                                         </>
                                     )}
                                 </Button>
+                                
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setPreviewVisible(true)}
+                                    disabled={isLoading || !selectedCluster || !selectedNamespace || !exportedYaml}
+                                >
+                                    <Eye className="mr-2 h-4 w-4" />
+                                    预览 YAML
+                                </Button>
+                                
                                 {exportedYaml && (
                                     <div className="space-x-2">
                                         <Button variant="outline" size="icon" onClick={() => copyToClipboard(exportedYaml)}>
@@ -352,6 +510,22 @@ export default function AdvancedKubernetesPage() {
                                     </div>
                                 )}
                             </div>
+                            
+                            {/* YAML 预览对话框 */}
+            {previewVisible && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                    <div className="w-full max-w-4xl max-h-[90vh] overflow-auto bg-background rounded-lg">
+                        <YamlPreview 
+                            yaml={exportedYaml}
+                            title={`${selectedNamespace} 命名空间资源 YAML`}
+                            description={`包含所选资源类型的 YAML 定义`}
+                            filename={`${selectedNamespace}-resources.yaml`}
+                            onClose={() => setPreviewVisible(false)}
+                        />
+                    </div>
+                </div>
+            )}
+                            
                             <Textarea
                                 value={exportedYaml}
                                 readOnly
@@ -514,3 +688,6 @@ export default function AdvancedKubernetesPage() {
         </div>
     )
 }
+
+
+

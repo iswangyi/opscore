@@ -2,6 +2,8 @@
  * API 客户端工具，用于与后端服务交互
  */
 
+import { stringify } from "querystring";
+
 // 基础 API URL，实际项目中应从环境变量获取
 const API_BASE_URL = "http://localhost:8080"; // 修改为您的后端服务地址
 
@@ -453,6 +455,7 @@ export const clustersAPI = {
 /**
  * Kubernetes 资源 API
  */
+// Kubernetes API
 export const kubernetesAPI = {
   // 获取命名空间列表
   getNamespaces: (clusterId) => fetchAPI(`/kubernetes/${clusterId}/namespaces`),
@@ -508,4 +511,46 @@ export const kubernetesAPI = {
     fetchAPI(
       `/kubernetes/${clusterId}/namespaces/${namespace}/pods/${podName}/logs${containerName ? `?container=${containerName}` : ""}`,
     ),
+ 
+    
+ // 添加集群
+  exportNamespaceYaml: (clusterId, namespace, resourceTypes = []) =>
+
+    fetchAPI("/clusters/export-yaml", {
+      method: "POST",
+      body: JSON.stringify({
+        clusterId: String(clusterId),
+        namespace,
+        resourceTypes,
+      }),
+    }),
+
+  // 导出命名空间中的资源为YAML
+  // exportNamespaceYaml: async (clusterId, namespace, resourceTypes = []) => {
+  //   console.log('开始导出YAML...');
+  //   try {
+  //     const response = await fetch(`/clusters/export-yaml`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ 
+  //         clusterId,
+  //         namespace,
+  //         resourceTypes,
+  //        }),
+  //     });
+  //     console.log('API请求已发送...');
+      
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.message || '导出YAML失败');
+  //     }
+      
+  //     return await response.json();
+  //   } catch (error) {
+  //     console.error('导出YAML错误:', error);
+  //     throw error;
+  //   }
+  // },
 }
