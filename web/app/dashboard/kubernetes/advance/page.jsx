@@ -30,7 +30,6 @@ export default function AdvancedKubernetesPage() {
     const [packageUrl, setPackageUrl] = useState("")
     const [copied, setCopied] = useState(false)
     const [activeTab, setActiveTab] = useState("export-yaml")
-    const [yamlPreview, setYamlPreview] = useState([])
     const [previewVisible, setPreviewVisible] = useState(false)
 
     // 加载集群列表
@@ -142,7 +141,7 @@ export default function AdvancedKubernetesPage() {
             
             // 如果有YAML内容，则设置YAML内容并显示预览
             if (response.data) {
-                setExportedYaml(response.data)
+                setExportedYaml(response.data.join('\n---\n'))
                 setPreviewVisible(true)
                 
                 toast({
@@ -166,6 +165,19 @@ export default function AdvancedKubernetesPage() {
         } finally {
             setIsLoading(false)
         }
+    }
+    const yamlFilterImageName = () => {
+        if (!exportedYaml) {
+            return ;
+        }
+        const lines = exportedYaml.split('\n');
+        const filteredLines = lines.filter(line => {
+            return  line.trim().startsWith("image: ");
+        });
+
+        // 提取镜像名称并去重
+        const uniqueImageNames = [...new Set(filteredLines.map(line => line.trim().replace("image: ", "")))];
+        setImageList(uniqueImageNames);
     }
 
     // 提取镜像列表
@@ -498,6 +510,14 @@ export default function AdvancedKubernetesPage() {
                                     <Eye className="mr-2 h-4 w-4" />
                                     预览 YAML
                                 </Button>
+                                <Button
+                                    variant="outline"
+                                    onClick={yamlFilterImageName}
+                                    disabled={isLoading || !selectedCluster || !selectedNamespace || !exportedYaml}
+                                >
+                                    提取镜像名称
+                                </Button>
+
                                 
                                 {exportedYaml && (
                                     <div className="space-x-2">
@@ -526,12 +546,12 @@ export default function AdvancedKubernetesPage() {
                 </div>
             )}
                             
-                            <Textarea
-                                value={exportedYaml}
+                            { <Textarea
+                                value={imageList.join('\n')}
                                 readOnly
                                 placeholder="点击导出 YAML按钮导出当前命名空间的所有资源"
                                 className="font-mono h-96"
-                            />
+                            /> }
                         </CardContent>
                     </Card>
                 </TabsContent>

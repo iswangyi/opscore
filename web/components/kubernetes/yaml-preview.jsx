@@ -83,7 +83,7 @@ export function YamlPreview({ yaml, title, description, filename, onClose }) {
       </CardHeader>
       <CardContent>
         <Textarea
-          value={Array.isArray(yaml) ? yaml.join('\n---\n') : (yaml || '# 没有YAML内容')}
+          value={yaml || '# 没有YAML内容'}
           readOnly
           className="font-mono text-sm h-96 resize-none"
         />

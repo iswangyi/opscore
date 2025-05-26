@@ -6,10 +6,15 @@ import (
 	"fmt"
 	"strings"
 
+	"opscore/internal/log"
+
+	"go.uber.org/zap"
+	appsv1 "k8s.io/api/apps/v1" // <-- 添加或修改为此
+	batchv1 "k8s.io/api/batch/v1" // <-- 添加
+	batchv1beta1 "k8s.io/api/batch/v1beta1" // <-- 添加 (如果需要处理旧版CronJob)
+	corev1 "k8s.io/api/core/v1" // <-- 添加
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"go.uber.org/zap"
-	"opscore/internal/log"
 	"sigs.k8s.io/yaml"
 )
 
@@ -63,7 +68,9 @@ func ExportResources(id , namespace string, resourceTypes []string) ([]byte, err
 				item.APIVersion = "apps/v1"
 				item.Kind = "Deployment"
 				resources = append(resources, item)
+				// 此处的注释可以移除，因为 cleanObject 会处理 status
 			}
+
 
 		case "statefulsets":
 			statefulsets, err := clientset.AppsV1().StatefulSets(namespace).List(context.TODO(), metav1.ListOptions{})
@@ -174,12 +181,7 @@ func ExportResources(id , namespace string, resourceTypes []string) ([]byte, err
 
 		// 将资源转换为YAML并写入缓冲区
 		for _, obj := range resources {
-			// 获取资源的名称和命名空间
-			// metadata := obj.(metav1.Object) // Type assertion to metav1.Object
-			// resourceName := metadata.GetName()
-			// resourceNamespace := metadata.GetNamespace()
-			// metadata.SetName(resourceName) // These are redundant as name/namespace are already set
-			// metadata.SetNamespace(resourceNamespace)
+
 			
 			// 清理不必要的字段
 			cleanObject(obj)
@@ -208,8 +210,45 @@ func ExportResources(id , namespace string, resourceTypes []string) ([]byte, err
 
 // cleanObject 清理Kubernetes对象中不必要的字段
 func cleanObject(obj runtime.Object) {
-	// 根据对象类型进行清理
-	// 这里可以添加特定资源类型的清理逻辑
-	// 例如删除status字段、自动生成的标签等
+	// 清理通用的元数据字段
+	if metaObj, ok := obj.(metav1.Object); ok {
+		metaObj.SetManagedFields(nil)
+		metaObj.SetSelfLink("")
+		metaObj.SetUID("")
+		metaObj.SetResourceVersion("")
+		metaObj.SetGeneration(0)
+		metaObj.SetCreationTimestamp(metav1.Time{})
+		metaObj.SetDeletionTimestamp(nil)
+		metaObj.SetDeletionGracePeriodSeconds(nil)
+		// 如果需要，也可以在这里清理 annotations 或 labels
+		// metaObj.SetAnnotations(nil)
+		// metaObj.SetLabels(nil)
+	}
+
+	// 根据具体资源类型清理 Status 字段
+	switch o := obj.(type) {
+	case *appsv1.Deployment:
+		o.Status = appsv1.DeploymentStatus{}
+	case *appsv1.StatefulSet:
+		o.Status = appsv1.StatefulSetStatus{}
+	case *corev1.Service:
+		// Service 的 status 字段通常比较简单，但为了统一也进行清理
+		o.Status = corev1.ServiceStatus{}
+	case *corev1.PersistentVolumeClaim:
+		o.Status = corev1.PersistentVolumeClaimStatus{}
+	case *corev1.PersistentVolume:
+		o.Status = corev1.PersistentVolumeStatus{}
+	case *batchv1.Job:
+		o.Status = batchv1.JobStatus{}
+	case *batchv1.CronJob:
+		o.Status = batchv1.CronJobStatus{}
+	case *batchv1beta1.CronJob: // 处理旧版 CronJob
+		o.Status = batchv1beta1.CronJobStatus{}
+	// 注意: corev1.Secret 类型通常没有 .Status 字段，其状态信息在 .Data 或 .StringData 中。
+	// 如果有其他需要清理 status 的类型，可以在这里添加 case。
+	// 例如，如果要处理 Pods:
+	// case *corev1.Pod:
+	// o.Status = corev1.PodStatus{}
+	}
 }
 
