@@ -460,8 +460,14 @@ export const kubernetesAPI = {
   // 获取命名空间列表
   getNamespaces: (clusterId) => fetchAPI(`/kubernetes/${clusterId}/namespaces`),
 
-  // 获取 Pod 列表
-  getPods: (clusterId, namespace = "default") => fetchAPI(`/kubernetes/listpods?namespace=${namespace}&clusterId=${clusterId}`),
+  // 获取 Pod 列表 (支持分页)
+  getPods: (clusterId, namespace = "default", limit = 200,continueToken = "") => {
+    let queryParams = `?namespace=${encodeURIComponent(namespace)}&clusterId=${encodeURIComponent(clusterId)}&limit=${limit}`;
+    if (continueToken) {
+      queryParams += `&continue=${encodeURIComponent(continueToken)}`;
+    }
+    return fetchAPI(`/kubernetes/listpods${queryParams}`);
+  },
 
   // 获取 Deployment 列表
   getDeployments: (clusterId, namespace = "default") =>
@@ -513,7 +519,6 @@ export const kubernetesAPI = {
     ),
  
     
- // 添加集群
   exportNamespaceYaml: (clusterId, namespace, resourceTypes = []) =>
 
     fetchAPI("/clusters/export-yaml", {
@@ -524,6 +529,16 @@ export const kubernetesAPI = {
         resourceTypes,
       }),
     }),
+
+    packageImages: async (namespace, imageList) => {
+      return fetchAPI("/clusters/package-image", {
+        method: "POST",
+        body: JSON.stringify({
+          namespace: String(namespace),
+          imageList,
+        }),
+      });
+    }
 
   // 导出命名空间中的资源为YAML
   // exportNamespaceYaml: async (clusterId, namespace, resourceTypes = []) => {

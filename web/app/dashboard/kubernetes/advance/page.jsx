@@ -31,6 +31,8 @@ export default function AdvancedKubernetesPage() {
     const [copied, setCopied] = useState(false)
     const [activeTab, setActiveTab] = useState("export-yaml")
     const [previewVisible, setPreviewVisible] = useState(false)
+    const [packageTaskId, setPackageTaskId] = useState("");
+    const [packageStatus, setPackageStatus] = useState("");
 
     // 加载集群列表
     useEffect(() => {
@@ -214,6 +216,9 @@ export default function AdvancedKubernetesPage() {
 
     // 打包所有镜像
     const packageAllImages = async () => {
+        console.log("selectedCluster", selectedCluster)
+        console.log("selectedNamespace", selectedNamespace)
+        console.log("imageList", imageList)
         if (!selectedCluster || !selectedNamespace) {
             toast({
                 title: "无法打包镜像",
@@ -222,7 +227,6 @@ export default function AdvancedKubernetesPage() {
             })
             return
         }
-
         if (imageList.length === 0) {
             toast({
                 title: "无法打包镜像",
@@ -231,35 +235,42 @@ export default function AdvancedKubernetesPage() {
             })
             return
         }
-
-        setIsPackaging(true)
-        setPackagingProgress(0)
-        setPackageUrl("")
-
         try {
-            // 模拟打包进度
-            const totalSteps = 10
-            for (let i = 1; i <= totalSteps; i++) {
-                await new Promise(resolve => setTimeout(resolve, 1000))
-                setPackagingProgress(i * (100 / totalSteps))
+            const resp = await kubernetesAPI.packageImages(selectedNamespace, imageList);
+            if (resp.fileName) {
+                setPackageTaskId(resp.fileName);
+                setPackageStatus("任务已提交，请稍后查询");
+                setPackageUrl("");
+                toast({ title: "打包任务已提交", description: "请稍后点击查询按钮获取结果" });
+            } else {
+                toast({ title: "打包任务提交失败", variant: "destructive" });
             }
-
-            // 模拟打包完成
-            setPackageUrl("https://example.com/packages/images.tar.gz")
-            toast({
-                title: "镜像打包成功",
-                description: "所有镜像已打包完成，可以下载",
-            })
         } catch (error) {
             toast({
                 title: "打包镜像失败",
                 description: error.message,
                 variant: "destructive",
             })
-        } finally {
-            setIsPackaging(false)
         }
-    }
+    };
+    // 查询打包结果
+    const checkPackageResult = async () => {
+        if (!packageTaskId) return;
+        try {
+            const resp = await kubernetesAPI.checkPackageImageResult(packageTaskId);
+            if (resp.result && resp.result.packageUrl) {
+                setPackageUrl(resp.result.packageUrl);
+                setPackageStatus("打包完成，可下载");
+            } else {
+                setPackageStatus("打包中或尚未完成");
+            }
+        } catch (e) {
+            toast({ title: "查询失败", description: e.message, variant: "destructive" });
+        }
+    };
+
+
+
 
     // 复制内容到剪贴板
     const copyToClipboard = (text) => {
@@ -639,23 +650,21 @@ export default function AdvancedKubernetesPage() {
                                     打包镜像需要先提取镜像列表，并且可能需要较长时间。打包完成后，您可以下载镜像包用于离线环境部署。
                                 </AlertDescription>
                             </Alert>
-
                             <div className="flex justify-between">
                                 <Button
                                     onClick={packageAllImages}
-                                    disabled={isPackaging || imageList.length === 0 || !selectedCluster || !selectedNamespace}
+                                    disabled={imageList.length === 0 || !selectedCluster || !selectedNamespace}
                                 >
-                                    {isPackaging ? (
-                                        <>
-                                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                                            打包中...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Package className="mr-2 h-4 w-4" />
-                                            打包所有镜像
-                                        </>
-                                    )}
+                                    <Package className="mr-2 h-4 w-4" />
+                                    打包所有镜像
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    onClick={checkPackageResult}
+                                    disabled={!packageTaskId}
+                                >
+                                    <RefreshCw className="mr-2 h-4 w-4" />
+                                    查询打包结果
                                 </Button>
                                 {packageUrl && (
                                     <Button variant="outline" asChild>
@@ -666,7 +675,6 @@ export default function AdvancedKubernetesPage() {
                                     </Button>
                                 )}
                             </div>
-
                             {isPackaging && (
                                 <div className="space-y-2">
                                     <div className="flex justify-between text-sm">
@@ -708,6 +716,4 @@ export default function AdvancedKubernetesPage() {
         </div>
     )
 }
-
-
 
