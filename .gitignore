@@ -40,3 +40,5 @@ yarn-error.log*
 *.seed
 *.pid.lock
 *.tar.gz
+test.db
+

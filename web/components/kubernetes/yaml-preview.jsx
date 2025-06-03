@@ -4,7 +4,8 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Copy, Check, Download, X } from "lucide-react"
+import { CopyButton } from "@/components/ui/CopyButton"
+import { Download, X } from "lucide-react"
 
 /**
  * YAML预览组件
@@ -17,16 +18,6 @@ import { Copy, Check, Download, X } from "lucide-react"
  * @returns {JSX.Element}
  */
 export function YamlPreview({ yaml, title, description, filename, onClose }) {
-  const [copied, setCopied] = useState(false)
-
-  // 复制YAML内容到剪贴板
-  const copyToClipboard = () => {
-    if (!yaml) return
-    
-    navigator.clipboard.writeText(yaml)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
 
   // 下载YAML文件
   const downloadYaml = () => {
@@ -51,15 +42,7 @@ export function YamlPreview({ yaml, title, description, filename, onClose }) {
           <CardDescription>{description || 'YAML资源定义预览'}</CardDescription>
         </div>
         <div className="flex space-x-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={copyToClipboard}
-            disabled={!yaml}
-            title="复制YAML内容"
-          >
-            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-          </Button>
+          <CopyButton value={yaml || ''} disabled={!yaml} title="复制YAML内容" />
           <Button
             variant="outline"
             size="icon"

@@ -530,42 +530,4 @@ export const kubernetesAPI = {
       }),
     }),
 
-    packageImages: async (namespace, imageList) => {
-      return fetchAPI("/clusters/package-image", {
-        method: "POST",
-        body: JSON.stringify({
-          namespace: String(namespace),
-          imageList,
-        }),
-      });
-    }
-
-  // 导出命名空间中的资源为YAML
-  // exportNamespaceYaml: async (clusterId, namespace, resourceTypes = []) => {
-  //   console.log('开始导出YAML...');
-  //   try {
-  //     const response = await fetch(`/clusters/export-yaml`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ 
-  //         clusterId,
-  //         namespace,
-  //         resourceTypes,
-  //        }),
-  //     });
-  //     console.log('API请求已发送...');
-      
-  //     if (!response.ok) {
-  //       const errorData = await response.json();
-  //       throw new Error(errorData.message || '导出YAML失败');
-  //     }
-      
-  //     return await response.json();
-  //   } catch (error) {
-  //     console.error('导出YAML错误:', error);
-  //     throw error;
-  //   }
-  // },
 }

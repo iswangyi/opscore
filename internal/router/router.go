@@ -88,8 +88,6 @@ func SetupRouter() *gin.Engine {
 
 		//导出yaml
 		k8sClusterRoutes.POST("/export-yaml", kubeapi.ExportResourcesHandler)
-		k8sClusterRoutes.POST("/package-image", kubeapi.PackageImageHandler)
-		k8sClusterRoutes.GET("/check-result", kubeapi.CheckPackageImageResultHandler)
 		// 未来可以添加其他集群相关的路由:
 		// k8sClusterRoutes.GET("/:clusterId", api.GetK8sClusterHandler)
 		// k8sClusterRoutes.PUT("/:clusterId", api.UpdateK8sClusterHandler)
