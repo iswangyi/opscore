@@ -32,6 +32,12 @@ export default function AdvancedKubernetesPage() {
   const [packageTaskId, setPackageTaskId] = useState('');
   const [packageStatus, setPackageStatus] = useState('');
 
+  // 添加目标集群状态
+  const [destinationCluster, setDestinationCluster] = useState(null);
+  // 添加迁移结果状态
+  const [migrationResults, setMigrationResults] = useState(null);
+  const [isMigrating, setIsMigrating] = useState(false);
+
   // 加载集群列表
   useEffect(() => {
     fetchClusters();
@@ -95,10 +101,83 @@ export default function AdvancedKubernetesPage() {
     }
   };
 
+  // 添加资源迁移函数
+  const migrateResources = async () => {
+    if (!selectedCluster || !destinationCluster || !selectedNamespace) {
+      toast({
+        title: '无法迁移资源',
+        description: '请先选择源集群、目标集群和命名空间',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // 检查源集群和目标集群是否相同
+    if (selectedCluster.id === destinationCluster.id) {
+      toast({
+        title: '无法迁移资源',
+        description: '源集群和目标集群不能相同',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // 检查是否至少选择了一种资源类型
+    const hasSelectedTypes = Object.values(selectedResourceTypes).some((value) => value);
+    if (!hasSelectedTypes) {
+      toast({
+        title: '无法迁移资源',
+        description: '请至少选择一种资源类型',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setIsMigrating(true);
+    setMigrationResults(null);
+    try {
+      // 调用后端 API 迁移资源
+      const response = await kubernetesAPI.migrateResources(
+        selectedCluster.id,
+        destinationCluster.id,
+        selectedNamespace,
+        Object.keys(selectedResourceTypes).filter((key) => selectedResourceTypes[key])
+      );
+
+      // 设置迁移结果
+      setMigrationResults(response.data || {});
+
+      // 检查是否有成功迁移的资源
+      const hasSuccessfulMigrations = Object.values(response.data || {}).some((typeResults) => Object.values(typeResults).some((result) => result.success));
+
+      if (hasSuccessfulMigrations) {
+        toast({
+          title: '资源迁移成功',
+          description: `已将命名空间 ${selectedNamespace} 的所选资源迁移到目标集群`
+        });
+      } else {
+        toast({
+          title: '资源迁移失败',
+          description: '所有资源迁移均失败，请查看详细结果',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      toast({
+        title: '资源迁移失败',
+        description: error.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setIsMigrating(false);
+    }
+  };
+
   const [selectedResourceTypes, setSelectedResourceTypes] = useState({
     deployments: true,
     statefulsets: true,
     services: true,
+    configmaps: true,
     secrets: true,
     pvcs: false,
     pvs: false,
@@ -170,15 +249,17 @@ export default function AdvancedKubernetesPage() {
       return;
     }
     const lines = exportedYaml.split('\n');
-    const filteredLines = lines.filter((line) => {
-      return line.trim().startsWith('image: ');
+    const Lines = lines.filter((line) => {
+      return line.trim().startsWith('image: ') || line.trim().startsWith('- image: ');
     });
+    // 将 - image: 替换为 image:
+    const filteredLines = Lines.map((line) => line.replace('- image: ', 'image: '));
 
     // 提取镜像名称并去重
     const uniqueImageNames = [...new Set(filteredLines.map((line) => line.trim().replace('image: ', '')))];
     const a = uniqueImageNames.map((imageName) => {
       const cmd1 = 'docker pull ' + imageName;
-      const imageFileName = imageName.replaceAll(":", '_').replaceAll("/", '_');
+      const imageFileName = imageName.replaceAll(':', '_').replaceAll('/', '_');
       const cmd2 = 'docker save -o ' + imageFileName + '.tar ' + imageName;
       return cmd1 + '\n' + cmd2;
     });
@@ -306,12 +387,12 @@ export default function AdvancedKubernetesPage() {
       </Card>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="export-yaml">导出 YAML</TabsTrigger>
-          <TabsTrigger value="naspace-migration">命名空间迁移</TabsTrigger>
+          <TabsTrigger value="naspace-migration">跨集群资源迁移</TabsTrigger>
+          <TabsTrigger value="extract-images">提取镜像列表</TabsTrigger>
           <TabsTrigger value="etcd-backup">etcd备份</TabsTrigger>
           <TabsTrigger value="cluster-cert-update">集群证书续期</TabsTrigger>
-          <TabsTrigger value="version-upgrade">集群版本升级</TabsTrigger>
         </TabsList>
 
         {/* 导出 YAML 标签页 */}
@@ -334,6 +415,16 @@ export default function AdvancedKubernetesPage() {
                       />
                       <label htmlFor="deployments" className="text-sm font-medium">
                         Deployments
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="configmaps"
+                        checked={selectedResourceTypes.configmaps}
+                        onCheckedChange={(checked) => setSelectedResourceTypes({ ...selectedResourceTypes, configmaps: !!checked })}
+                      />
+                      <label htmlFor="configmaps" className="text-sm font-medium">
+                        Configmaps
                       </label>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -435,6 +526,231 @@ export default function AdvancedKubernetesPage() {
               )}
 
               {<Textarea value={imageList.join('\n')} readOnly placeholder="点击导出 YAML按钮导出当前命名空间的所有资源" className="font-mono h-96" />}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* 跨集群资源迁移标签页 */}
+        <TabsContent value="naspace-migration" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>跨集群资源迁移</CardTitle>
+              <CardDescription>将所选命名空间中的资源从源集群迁移到目标集群</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="space-y-2">
+                  <Label htmlFor="source-cluster">源集群</Label>
+                  <Select
+                    value={selectedCluster?.id}
+                    onValueChange={(value) => {
+                      const cluster = clusters.find((c) => c.id === value);
+                      setSelectedCluster(cluster);
+                      localStorage.setItem('selectedClusterId', value);
+                    }}
+                    disabled={isMigrating || clusters.length === 0}
+                  >
+                    <SelectTrigger id="source-cluster">
+                      <SelectValue placeholder="选择源集群" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {clusters.map((cluster) => (
+                        <SelectItem key={cluster.id} value={cluster.id}>
+                          {cluster.cluster_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="destination-cluster">目标集群</Label>
+                  <Select
+                    value={destinationCluster?.id}
+                    onValueChange={(value) => {
+                      const cluster = clusters.find((c) => c.id === value);
+                      setDestinationCluster(cluster);
+                    }}
+                    disabled={isMigrating || clusters.length === 0}
+                  >
+                    <SelectTrigger id="destination-cluster">
+                      <SelectValue placeholder="选择目标集群" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {clusters.map((cluster) => (
+                        <SelectItem key={cluster.id} value={cluster.id}>
+                          {cluster.cluster_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="space-y-2">
+                  <Label>选择资源类型</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="migrate-deployments"
+                        checked={selectedResourceTypes.deployments}
+                        onCheckedChange={(checked) => setSelectedResourceTypes({ ...selectedResourceTypes, deployments: !!checked })}
+                      />
+                      <label htmlFor="migrate-deployments" className="text-sm font-medium">
+                        Deployments
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="migrate-configmaps"
+                        checked={selectedResourceTypes.configmaps}
+                        onCheckedChange={(checked) => setSelectedResourceTypes({ ...selectedResourceTypes, configmaps: !!checked })}
+                      />
+                      <label htmlFor="migrate-configmaps" className="text-sm font-medium">
+                        Configmaps
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="migrate-statefulsets"
+                        checked={selectedResourceTypes.statefulsets}
+                        onCheckedChange={(checked) => setSelectedResourceTypes({ ...selectedResourceTypes, statefulsets: !!checked })}
+                      />
+                      <label htmlFor="migrate-statefulsets" className="text-sm font-medium">
+                        StatefulSets
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="migrate-services" 
+                        checked={selectedResourceTypes.services} 
+                        onCheckedChange={(checked) => setSelectedResourceTypes({ ...selectedResourceTypes, services: !!checked })} 
+                      />
+                      <label htmlFor="migrate-services" className="text-sm font-medium">
+                        Services
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="migrate-secrets" 
+                        checked={selectedResourceTypes.secrets} 
+                        onCheckedChange={(checked) => setSelectedResourceTypes({ ...selectedResourceTypes, secrets: !!checked })} 
+                      />
+                      <label htmlFor="migrate-secrets" className="text-sm font-medium">
+                        Secrets
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="migrate-pvcs" 
+                        checked={selectedResourceTypes.pvcs} 
+                        onCheckedChange={(checked) => setSelectedResourceTypes({ ...selectedResourceTypes, pvcs: !!checked })} 
+                      />
+                      <label htmlFor="migrate-pvcs" className="text-sm font-medium">
+                        PVCs
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="migrate-pvs" 
+                        checked={selectedResourceTypes.pvs} 
+                        onCheckedChange={(checked) => setSelectedResourceTypes({ ...selectedResourceTypes, pvs: !!checked })} 
+                      />
+                      <label htmlFor="migrate-pvs" className="text-sm font-medium">
+                        PVs
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="migrate-cronjobs" 
+                        checked={selectedResourceTypes.cronjobs} 
+                        onCheckedChange={(checked) => setSelectedResourceTypes({ ...selectedResourceTypes, cronjobs: !!checked })} 
+                      />
+                      <label htmlFor="migrate-cronjobs" className="text-sm font-medium">
+                        CronJobs
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="migrate-jobs" 
+                        checked={selectedResourceTypes.jobs} 
+                        onCheckedChange={(checked) => setSelectedResourceTypes({ ...selectedResourceTypes, jobs: !!checked })} 
+                      />
+                      <label htmlFor="migrate-jobs" className="text-sm font-medium">
+                        Jobs
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="migrate-namespace">命名空间</Label>
+                  <Select 
+                    value={selectedNamespace} 
+                    onValueChange={setSelectedNamespace} 
+                    disabled={isMigrating || !selectedCluster || namespaces.length === 0}
+                  >
+                    <SelectTrigger id="migrate-namespace">
+                      <SelectValue placeholder="选择命名空间" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {namespaces.map((ns) => (
+                        <SelectItem key={ns} value={ns}>
+                          {ns}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex space-x-2">
+                <Button onClick={migrateResources} disabled={isMigrating || !selectedCluster || !destinationCluster || !selectedNamespace}>
+                  {isMigrating ? (
+                    <>
+                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                      迁移中...
+                    </>
+                  ) : (
+                    <>
+                      <Package className="mr-2 h-4 w-4" />
+                      开始迁移
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {migrationResults && (
+                <div className="border rounded-md p-4 mt-4">
+                  <h3 className="text-lg font-medium mb-2">迁移结果</h3>
+                  {Object.entries(migrationResults).map(([resourceType, resources]) => (
+                    <div key={resourceType} className="mb-4">
+                      <h4 className="font-medium mb-2 capitalize">{resourceType}</h4>
+                      <div className="space-y-2">
+                        {Object.entries(resources).length > 0 ? (
+                          Object.entries(resources).map(([resourceName, result]) => (
+                            <div
+                              key={resourceName}
+                              className={`p-2 rounded-md ${
+                                result.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="font-mono text-sm">{resourceName}</span>
+                                <span className={`text-xs px-2 py-1 rounded-full ${result.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                  {result.success ? '成功' : '失败'}
+                                </span>
+                              </div>
+                              {!result.success && <p className="text-xs text-red-600 mt-1">{result.message}</p>}
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-sm text-muted-foreground">没有{resourceType}类型的资源</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
