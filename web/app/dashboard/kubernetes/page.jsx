@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react" // 确保导入 useMemo
 import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -25,6 +25,7 @@ import { ServicesList } from "@/components/kubernetes/services-list"
 import { ConfigMapsList } from "@/components/kubernetes/config-maps-list"
 import { ResourceDetails } from "@/components/kubernetes/resource-details"
 
+
 export default function KubernetesPage() {
   const { toast } = useToast()
   const searchParams = useSearchParams()
@@ -36,6 +37,7 @@ export default function KubernetesPage() {
   const [selectedCluster, setSelectedCluster] = useState(null)
   const [namespaces, setNamespaces] = useState([])
   const [selectedNamespace, setSelectedNamespace] = useState("default")
+  const [initialContinueToken,setInitialContinueToken] = useState("")
   const [resources, setResources] = useState({
     pods: [],
     deployments: [],
@@ -155,7 +157,8 @@ export default function KubernetesPage() {
       switch (selectedTab) {
         case "pods":
           data = await kubernetesAPI.getPods(selectedCluster.id, selectedNamespace)
-          setResources((prev) => ({ ...prev, pods: data.data }))
+          setResources((prev) => ({ ...prev, pods: data.data.pods }))
+          setInitialContinueToken(data.continueToken)
           break
         case "deployments":
           data = await kubernetesAPI.getDeployments(selectedCluster.id, selectedNamespace)
@@ -197,18 +200,47 @@ export default function KubernetesPage() {
     }
   }
 
-  // 过滤资源
-  const getFilteredResources = (resourceType) => {
-    const resourceList = resources[resourceType] || []
-    if (!searchTerm) return resourceList
-
-    return resourceList.filter(
-      (resource) =>
-        resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (resource.namespace && resource.namespace.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (resource.status && resource.status.toLowerCase().includes(searchTerm.toLowerCase())),
+  // 使用 useMemo 记忆过滤后的资源
+  const filteredPods = useMemo(() => {
+    const podList = resources.pods || []
+    if (!searchTerm) return podList
+    return podList.filter(
+      (pod) =>
+        pod.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (pod.namespace && pod.namespace.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (pod.status && pod.status.toLowerCase().includes(searchTerm.toLowerCase())),
     )
-  }
+  }, [resources.pods, searchTerm])
+
+  const filteredDeployments = useMemo(() => {
+    const deploymentList = resources.deployments || []
+    if (!searchTerm) return deploymentList
+    return deploymentList.filter(
+      (deployment) =>
+        deployment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (deployment.namespace && deployment.namespace.toLowerCase().includes(searchTerm.toLowerCase())),
+    )
+  }, [resources.deployments, searchTerm])
+
+  const filteredServices = useMemo(() => {
+    const serviceList = resources.services || []
+    if (!searchTerm) return serviceList
+    return serviceList.filter(
+      (service) =>
+        service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (service.namespace && service.namespace.toLowerCase().includes(searchTerm.toLowerCase())),
+    )
+  }, [resources.services, searchTerm])
+
+  const filteredConfigMaps = useMemo(() => {
+    const configMapList = resources.configMaps || []
+    if (!searchTerm) return configMapList
+    return configMapList.filter(
+      (configMap) =>
+        configMap.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (configMap.namespace && configMap.namespace.toLowerCase().includes(searchTerm.toLowerCase())),
+    )
+  }, [resources.configMaps, searchTerm])
 
   // 处理集群变更
   const handleClusterChange = (clusterId) => {
@@ -281,7 +313,7 @@ export default function KubernetesPage() {
           </Select>
 
           <Select value={selectedNamespace} onValueChange={handleNamespaceChange}>
-            <SelectTrigger className="w-full sm:w-[600px]">
+            <SelectTrigger className="w-full sm:w-[400px]">
               <SelectValue placeholder="选择命名空间" />
             </SelectTrigger>
             <SelectContent>
@@ -339,7 +371,11 @@ export default function KubernetesPage() {
               <PodsList
                 clusterId={selectedCluster?.id}
                 namespace={selectedNamespace}
-                pods={getFilteredResources("pods")}
+                initialPods={filteredPods} // 使用 useMemo 后的 filteredPods
+                // 注意：这里我们将 prop 名称从 pods 改为 initialPods 以匹配 PodsList 组件的期望
+                // 如果 PodsList 期望的 prop 是 'pods'，则 PodsList 内部的 useEffect 依赖也应是 'pods'
+                // 但根据之前的 PodsList 代码，它期望的是 initialPods
+                initialContinueToken="" // 假设目前没有分页 token，如果后续添加，也需要稳定化
                 isLoading={isLoading}
                 onRefresh={handleRefresh}
               />
@@ -357,7 +393,7 @@ export default function KubernetesPage() {
               <DeploymentsList
                 clusterId={selectedCluster?.id}
                 namespace={selectedNamespace}
-                deployments={getFilteredResources("deployments")}
+                initialDeployments={filteredDeployments} // 同样使用 useMemo
                 isLoading={isLoading}
                 onRefresh={handleRefresh}
                 namespaces={namespaces}
@@ -376,7 +412,7 @@ export default function KubernetesPage() {
               <ServicesList
                 clusterId={selectedCluster?.id}
                 namespace={selectedNamespace}
-                services={getFilteredResources("services")}
+                initialServices={filteredServices} // 同样使用 useMemo
                 isLoading={isLoading}
                 onRefresh={handleRefresh}
               />
@@ -394,7 +430,7 @@ export default function KubernetesPage() {
               <ConfigMapsList
                 clusterId={selectedCluster?.id}
                 namespace={selectedNamespace}
-                configMaps={getFilteredResources("configMaps")}
+                initialConfigMaps={filteredConfigMaps} // 同样使用 useMemo
                 isLoading={isLoading}
                 onRefresh={handleRefresh}
               />

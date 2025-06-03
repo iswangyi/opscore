@@ -15,7 +15,7 @@ var (
 )
 
 func NewGlobalDB() (*DB, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("/root/opscore/test.db"), &gorm.Config{})
 
 	if err != nil {
 		panic(err)

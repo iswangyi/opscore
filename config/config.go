@@ -1,20 +1,24 @@
 package config
 
 import (
-	"github.com/spf13/viper"
-	"github.com/fsnotify/fsnotify"
-	"go.uber.org/zap"
 	"fmt"
 	"sync"
+	"github.com/fsnotify/fsnotify"
+	"github.com/spf13/viper"
+	"go.uber.org/zap"
 )
 
 var (
-	globalConfig *Config
+	GlobalConfig *Config
 	once         sync.Once
 )
 
 type Config struct {
 	VMware VMwareConfig `mapstructure:"vmware"`
+	Kubernetes Kubernetes `mapstructure:"kubernetes"`
+}
+type Kubernetes struct {
+	PackageImagesDir string `mapstructure:"packageImagesDir"`
 }
 
 type VMwareConfig struct {
@@ -70,14 +74,14 @@ func (c *Config) GetVMwareConfig() VMwareConfig {
 func InitConfig() (*Config, error) {
 	var err error
 	once.Do(func() {
-		globalConfig, err = SetupConfig()
+		GlobalConfig, err = SetupConfig()
 	})
-	return globalConfig, err
+	return GlobalConfig, err
 }
 
 // GetConfig 获取全局配置实例
 func GetConfig() *Config {
-	if globalConfig == nil {
+	if GlobalConfig == nil {
 		// 如果配置未初始化，则进行初始化
 		config, err := InitConfig()
 		if err != nil {
@@ -85,6 +89,6 @@ func GetConfig() *Config {
 		}
 		return config
 	}
-	return globalConfig
+	return GlobalConfig
 }
 

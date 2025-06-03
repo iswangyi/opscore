@@ -3,3 +3,7 @@ vmware:
   user: administrator@vsphere.local
   password: Axzx@2023
   insecure: true
+
+kubernetes:
+  #不配置则使用当前目录
+  packetImagesDir: /tmp/packetImages

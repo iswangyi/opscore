@@ -2,6 +2,8 @@
  * API 客户端工具，用于与后端服务交互
  */
 
+import { stringify } from "querystring";
+
 // 基础 API URL，实际项目中应从环境变量获取
 const API_BASE_URL = "http://localhost:8080"; // 修改为您的后端服务地址
 
@@ -453,12 +455,19 @@ export const clustersAPI = {
 /**
  * Kubernetes 资源 API
  */
+// Kubernetes API
 export const kubernetesAPI = {
   // 获取命名空间列表
   getNamespaces: (clusterId) => fetchAPI(`/kubernetes/${clusterId}/namespaces`),
 
-  // 获取 Pod 列表
-  getPods: (clusterId, namespace = "default") => fetchAPI(`/kubernetes/listpods?namespace=${namespace}&clusterId=${clusterId}`),
+  // 获取 Pod 列表 (支持分页)
+  getPods: (clusterId, namespace = "default", limit = 200,continueToken = "") => {
+    let queryParams = `?namespace=${encodeURIComponent(namespace)}&clusterId=${encodeURIComponent(clusterId)}&limit=${limit}`;
+    if (continueToken) {
+      queryParams += `&continue=${encodeURIComponent(continueToken)}`;
+    }
+    return fetchAPI(`/kubernetes/listpods${queryParams}`);
+  },
 
   // 获取 Deployment 列表
   getDeployments: (clusterId, namespace = "default") =>
@@ -508,4 +517,17 @@ export const kubernetesAPI = {
     fetchAPI(
       `/kubernetes/${clusterId}/namespaces/${namespace}/pods/${podName}/logs${containerName ? `?container=${containerName}` : ""}`,
     ),
+ 
+    
+  exportNamespaceYaml: (clusterId, namespace, resourceTypes = []) =>
+
+    fetchAPI("/clusters/export-yaml", {
+      method: "POST",
+      body: JSON.stringify({
+        clusterId: String(clusterId),
+        namespace,
+        resourceTypes,
+      }),
+    }),
+
 }

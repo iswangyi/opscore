@@ -53,6 +53,20 @@ export default function DashboardLayout({ children }) {
       title: "Kubernetes",
       href: "/dashboard/kubernetes",
       icon: Layers,
+      submenu: [
+        {
+          title: "概览",
+          href: "/dashboard/kubernetes",
+        },
+        {
+          title: "集群管理",
+          href: "/dashboard/kubernetes/advance",
+        },
+        {
+          title: "中间件管理",
+          href: "/dashboard/kubernetes/middleware",
+        },
+      ]
     },
     {
       title: "VMware",
@@ -125,17 +139,34 @@ export default function DashboardLayout({ children }) {
           <aside className="fixed inset-0 top-16 z-30 h-[calc(100vh-4rem)] w-full overflow-y-auto border-r bg-background p-6 md:hidden">
             <nav className="flex flex-col gap-2">
               {navItems.map((item, index) => (
-                <Button
-                  key={index}
-                  variant={pathname === item.href ? "default" : "ghost"}
-                  className="justify-start"
-                  asChild
-                >
-                  <Link href={item.href}>
-                    <item.icon className="mr-2 h-5 w-5" />
-                    {item.title}
-                  </Link>
-                </Button>
+                <div key={index} className="flex flex-col gap-1">
+                  <Button
+                    variant={pathname === item.href && !item.submenu ? "default" : "ghost"}
+                    className="justify-start"
+                    asChild
+                  >
+                    <Link href={item.href}>
+                      <item.icon className="mr-2 h-5 w-5" />
+                      {item.title}
+                    </Link>
+                  </Button>
+                  {item.submenu && (
+                    <div className="ml-6 flex flex-col gap-1">
+                      {item.submenu.map((subItem, subIndex) => (
+                        <Button
+                          key={subIndex}
+                          variant={pathname === subItem.href ? "default" : "ghost"}
+                          className="justify-start"
+                          asChild
+                        >
+                          <Link href={subItem.href}>
+                            {subItem.title}
+                          </Link>
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
             </nav>
           </aside>
@@ -146,17 +177,34 @@ export default function DashboardLayout({ children }) {
           <nav className="grid items-start px-4 py-6 lg:px-6">
             <div className="flex flex-col gap-2">
               {navItems.map((item, index) => (
-                <Button
-                  key={index}
-                  variant={pathname === item.href ? "default" : "ghost"}
-                  className="justify-start"
-                  asChild
-                >
-                  <Link href={item.href}>
-                    <item.icon className="mr-2 h-5 w-5" />
-                    {item.title}
-                  </Link>
-                </Button>
+                <div key={index} className="flex flex-col gap-1">
+                  <Button
+                    variant={pathname === item.href && !item.submenu ? "default" : "ghost"}
+                    className="justify-start"
+                    asChild
+                  >
+                    <Link href={item.href}>
+                      <item.icon className="mr-2 h-5 w-5" />
+                      {item.title}
+                    </Link>
+                  </Button>
+                  {item.submenu && (
+                    <div className="ml-6 flex flex-col gap-1">
+                      {item.submenu.map((subItem, subIndex) => (
+                        <Button
+                          key={subIndex}
+                          variant={pathname === subItem.href ? "default" : "ghost"}
+                          className="justify-start text-sm"
+                          asChild
+                        >
+                          <Link href={subItem.href}>
+                            {subItem.title}
+                          </Link>
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </nav>
