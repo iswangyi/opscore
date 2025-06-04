@@ -27,12 +27,13 @@ type MigrateResult struct {
 }
 
 // MigrateResources 将资源从源集群迁移到目标集群
-func MigrateResources(sourceClusterID, destClusterID, namespace string, resourceTypes []string) (map[string]map[string]MigrateResult, error) {
+func MigrateResources(sourceClusterID, destClusterID, sourceNamespace, destNamespace string, resourceTypes []string) (map[string]map[string]MigrateResult, error) {
 	logger := log.GetLogger()
 	logger.Info("开始资源迁移",
 		zap.String("sourceClusterID", sourceClusterID),
 		zap.String("destClusterID", destClusterID),
-		zap.String("namespace", namespace),
+		zap.String("sourceNamespace", sourceNamespace),
+		zap.String("destNamespace", destNamespace),
 		zap.Strings("resourceTypes", resourceTypes))
 
 	// 获取源集群和目标集群的信息
@@ -73,7 +74,7 @@ func MigrateResources(sourceClusterID, destClusterID, namespace string, resource
 	results := make(map[string]map[string]MigrateResult)
 
 	// 确保目标命名空间存在
-	if err := ensureNamespaceExists(destClient, namespace); err != nil {
+	if err := ensureNamespaceExists(destClient, destNamespace); err != nil {
 		logger.Error("确保目标命名空间存在失败", zap.Error(err))
 		return nil, fmt.Errorf("确保目标命名空间存在失败: %v", err)
 	}
@@ -88,7 +89,7 @@ func MigrateResources(sourceClusterID, destClusterID, namespace string, resource
 
 		switch strings.ToLower(resourceType) {
 		case "deployments":
-			deployments, err := sourceClient.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
+			deployments, err := sourceClient.AppsV1().Deployments(sourceNamespace).List(context.TODO(), metav1.ListOptions{})
 			if err != nil {
 				logger.Error("获取Deployments失败", zap.Error(err))
 				resourceResults["_error"] = MigrateResult{Success: false, Message: fmt.Sprintf("获取Deployments失败: %v", err)}
@@ -103,7 +104,7 @@ func MigrateResources(sourceClusterID, destClusterID, namespace string, resource
 			}
 
 		case "statefulsets":
-			statefulsets, err := sourceClient.AppsV1().StatefulSets(namespace).List(context.TODO(), metav1.ListOptions{})
+			statefulsets, err := sourceClient.AppsV1().StatefulSets(sourceNamespace).List(context.TODO(), metav1.ListOptions{})
 			if err != nil {
 				logger.Error("获取StatefulSets失败", zap.Error(err))
 				resourceResults["_error"] = MigrateResult{Success: false, Message: fmt.Sprintf("获取StatefulSets失败: %v", err)}
@@ -118,7 +119,7 @@ func MigrateResources(sourceClusterID, destClusterID, namespace string, resource
 			}
 
 		case "services":
-			serviceList, err := sourceClient.CoreV1().Services(namespace).List(context.TODO(), metav1.ListOptions{})
+			serviceList, err := sourceClient.CoreV1().Services(sourceNamespace).List(context.TODO(), metav1.ListOptions{})
 			if err != nil {
 				logger.Error("获取Services失败", zap.Error(err))
 				resourceResults["_error"] = MigrateResult{Success: false, Message: fmt.Sprintf("获取Services失败: %v", err)}
@@ -142,8 +143,8 @@ func MigrateResources(sourceClusterID, destClusterID, namespace string, resource
 			}
 
 		case "configmaps":
-			configMapList, err := sourceClient.CoreV1().ConfigMaps(namespace).List(context.TODO(), metav1.ListOptions{})
-			if err!= nil {
+			configMapList, err := sourceClient.CoreV1().ConfigMaps(sourceNamespace).List(context.TODO(), metav1.ListOptions{})
+			if err != nil {
 				logger.Error("获取ConfigMaps失败", zap.Error(err))
 				resourceResults["_error"] = MigrateResult{Success: false, Message: fmt.Sprintf("获取ConfigMaps失败: %v", err)}
 				continue
@@ -156,7 +157,7 @@ func MigrateResources(sourceClusterID, destClusterID, namespace string, resource
 				resourceNames = append(resourceNames, item.Name)
 			}
 		case "secrets":
-			secretList, err := sourceClient.CoreV1().Secrets(namespace).List(context.TODO(), metav1.ListOptions{})
+			secretList, err := sourceClient.CoreV1().Secrets(sourceNamespace).List(context.TODO(), metav1.ListOptions{})
 			if err != nil {
 				logger.Error("获取Secrets失败", zap.Error(err))
 				resourceResults["_error"] = MigrateResult{Success: false, Message: fmt.Sprintf("获取Secrets失败: %v", err)}
@@ -171,7 +172,7 @@ func MigrateResources(sourceClusterID, destClusterID, namespace string, resource
 			}
 
 		case "pvcs", "persistentvolumeclaims":
-			pvcList, err := sourceClient.CoreV1().PersistentVolumeClaims(namespace).List(context.TODO(), metav1.ListOptions{})
+			pvcList, err := sourceClient.CoreV1().PersistentVolumeClaims(sourceNamespace).List(context.TODO(), metav1.ListOptions{})
 			if err != nil {
 				logger.Error("获取PersistentVolumeClaims失败", zap.Error(err))
 				resourceResults["_error"] = MigrateResult{Success: false, Message: fmt.Sprintf("获取PersistentVolumeClaims失败: %v", err)}
@@ -202,10 +203,10 @@ func MigrateResources(sourceClusterID, destClusterID, namespace string, resource
 			}
 
 		case "cronjobs":
-			cronjobList, err := sourceClient.BatchV1().CronJobs(namespace).List(context.TODO(), metav1.ListOptions{})
+			cronjobList, err := sourceClient.BatchV1().CronJobs(sourceNamespace).List(context.TODO(), metav1.ListOptions{})
 			if err != nil {
 				// 尝试BatchV1beta1 API (针对较旧的Kubernetes版本)
-				cronjobBetaList, betaErr := sourceClient.BatchV1beta1().CronJobs(namespace).List(context.TODO(), metav1.ListOptions{})
+				cronjobBetaList, betaErr := sourceClient.BatchV1beta1().CronJobs(sourceNamespace).List(context.TODO(), metav1.ListOptions{})
 				if betaErr != nil {
 					logger.Error("获取CronJobs失败", zap.Error(err), zap.Error(betaErr))
 					resourceResults["_error"] = MigrateResult{Success: false, Message: fmt.Sprintf("获取CronJobs失败: %v, %v", err, betaErr)}
@@ -229,7 +230,7 @@ func MigrateResources(sourceClusterID, destClusterID, namespace string, resource
 			}
 
 		case "jobs":
-			jobList, err := sourceClient.BatchV1().Jobs(namespace).List(context.TODO(), metav1.ListOptions{})
+			jobList, err := sourceClient.BatchV1().Jobs(sourceNamespace).List(context.TODO(), metav1.ListOptions{})
 			if err != nil {
 				logger.Error("获取Jobs失败", zap.Error(err))
 				resourceResults["_error"] = MigrateResult{Success: false, Message: fmt.Sprintf("获取Jobs失败: %v", err)}
@@ -252,7 +253,7 @@ func MigrateResources(sourceClusterID, destClusterID, namespace string, resource
 			cleanObject(obj)
 
 			// 将资源应用到目标集群
-			err := applyResourceToCluster(destClient, obj, namespace)
+			err := applyResourceToCluster(destClient, obj, destNamespace)
 			if err != nil {
 				logger.Error("应用资源到目标集群失败",
 					zap.String("resourceType", resourceType),

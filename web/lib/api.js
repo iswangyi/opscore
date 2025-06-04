@@ -531,13 +531,14 @@ export const kubernetesAPI = {
     }),
 
   // 集群间资源迁移
-  migrateResources: (sourceClusterId, destinationClusterId, namespace, resourceTypes = []) =>
+  migrateResources: (sourceClusterId, destinationClusterId, sourceNamespace, destNamespace, resourceTypes = []) =>
     fetchAPI("/clusters/migrate-resources", {
       method: "POST",
       body: JSON.stringify({
         sourceClusterId: String(sourceClusterId),
         destinationClusterId: String(destinationClusterId),
-        namespace,
+        sourceNamespace,
+        destNamespace,
         resourceTypes,
       }),
     }),

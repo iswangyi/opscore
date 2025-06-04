@@ -13,7 +13,8 @@ import (
 type MigrateResourcesRequest struct {
 	SourceClusterID      string   `json:"sourceClusterId" binding:"required"`
 	DestinationClusterID string   `json:"destinationClusterId" binding:"required"`
-	Namespace            string   `json:"namespace" binding:"required"`
+	SourceNamespace      string   `json:"sourceNamespace" binding:"required"`
+	DestNamespace        string   `json:"destNamespace" binding:"required"`
 	ResourceTypes        []string `json:"resourceTypes"`
 }
 
@@ -47,14 +48,16 @@ func MigrateResourcesHandler(c *gin.Context) {
 	logger.Info("MigrateResourcesHandler: 开始处理资源迁移请求",
 		zap.String("sourceClusterId", req.SourceClusterID),
 		zap.String("destinationClusterId", req.DestinationClusterID),
-		zap.String("namespace", req.Namespace),
+		zap.String("sourceNamespace", req.SourceNamespace),
+		zap.String("destNamespace", req.DestNamespace),
 		zap.Strings("resourceTypes", req.ResourceTypes))
 
 	// 调用业务逻辑层执行资源迁移
 	results, err := kubernetes.MigrateResources(
 		req.SourceClusterID,
 		req.DestinationClusterID,
-		req.Namespace,
+		req.SourceNamespace,
+		req.DestNamespace,
 		req.ResourceTypes,
 	)
 
