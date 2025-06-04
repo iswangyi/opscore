@@ -2,8 +2,8 @@ package router
 
 import (
 	"net/http"
-	kubeapi "opscore/internal/api/kubeapi" 
-	 "opscore/internal/api"
+	"opscore/internal/api"
+	kubeapi "opscore/internal/api/kubeapi"
 	"opscore/internal/log"
 	"opscore/internal/middleware"
 
@@ -13,7 +13,7 @@ import (
 var db = make(map[string]string) // 这个db似乎是示例代码，与k8s无关
 
 func SetupRouter() *gin.Engine {
-	logger := log.GetLogger() 
+	logger := log.GetLogger()
 
 	// Disable Console Color
 	// gin.DisableConsoleColor()
@@ -22,7 +22,6 @@ func SetupRouter() *gin.Engine {
 	// Cors 中间件
 	r.Use(middleware.LoggerMiddleware(logger))
 	r.Use(middleware.CORSMiddleware())
-
 
 	// Ping test
 	r.GET("/ping", func(c *gin.Context) {
@@ -88,6 +87,10 @@ func SetupRouter() *gin.Engine {
 
 		//导出yaml
 		k8sClusterRoutes.POST("/export-yaml", kubeapi.ExportResourcesHandler)
+
+		//集群间资源迁移
+		k8sClusterRoutes.POST("/migrate-resources", kubeapi.MigrateResourcesHandler)
+
 		// 未来可以添加其他集群相关的路由:
 		// k8sClusterRoutes.GET("/:clusterId", api.GetK8sClusterHandler)
 		// k8sClusterRoutes.PUT("/:clusterId", api.UpdateK8sClusterHandler)
@@ -99,7 +102,7 @@ func SetupRouter() *gin.Engine {
 	{
 		// GET /kubernetes/namespaces - 获取所有命名空间
 		kubernetesRoutes.GET("/:clusterID/namespaces", kubeapi.GetNamespaces)
-		kubernetesRoutes.GET("/listpods",kubeapi.GetPodsInNamespace)
+		kubernetesRoutes.GET("/listpods", kubeapi.GetPodsInNamespace)
 		//kubernetesRoutes.GET("/namespaces/:namespace/services", kubernetes.GetServicesInNamespace)
 		//kubernetesRoutes.GET("/namespaces/:namespace/deployments", kubernetes.GetDeploymentsInNamespace)
 		//kubernetesRoutes.GET("/namespaces/:namespace/statefulsets", kubernetes.GetStatefulSetsInNamespace)
@@ -107,7 +110,6 @@ func SetupRouter() *gin.Engine {
 		//kubernetesRoutes.GET("/namespaces/:namespace/jobs", kubernetes.GetJobsInNamespace)
 		//kubernetesRoutes.GET("/namespaces/:namespace/cronjobs", kubernetes.GetCronJobsInNamespace)
 	}
-
 
 	// VMware 路由示例 (来自现有代码)
 	unauthorized := r.Group("/vmware")
