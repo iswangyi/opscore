@@ -5,7 +5,7 @@
 import { stringify } from "querystring";
 
 // 基础 API URL，实际项目中应从环境变量获取
-const API_BASE_URL = "http://localhost:8080"; // 修改为您的后端服务地址
+const API_BASE_URL = "http://172.10.6.8:8080"; // 修改为您的后端服务地址
 
 // 模拟数据，用于在没有后端服务时提供数据
 const MOCK_DATA = {
