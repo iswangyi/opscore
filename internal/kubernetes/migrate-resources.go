@@ -309,6 +309,7 @@ func ensureNamespaceExists(client *kubernetes.Clientset, namespaceName string) e
 
 // applyResourceToCluster 将资源应用到目标集群
 func applyResourceToCluster(client *kubernetes.Clientset, obj runtime.Object, namespace string) error {
+	log.GetLogger().Info("应用资源到目标集群", zap.String("namespace", namespace))
 	// 将对象转换为YAML
 	yamlBytes, err := yaml.Marshal(obj)
 	if err != nil {
@@ -325,7 +326,8 @@ func applyResourceToCluster(client *kubernetes.Clientset, obj runtime.Object, na
 	// 根据对象类型执行相应的创建或更新操作
 	switch o := object.(type) {
 	case *appsv1.Deployment:
-		// 尝试获取现有的Deployment
+		// 修改对应类型的命名空间
+		o.Namespace = namespace
 		_, err := client.AppsV1().Deployments(namespace).Get(context.TODO(), o.Name, metav1.GetOptions{})
 		if err != nil {
 			if errors.IsNotFound(err) {
@@ -346,6 +348,7 @@ func applyResourceToCluster(client *kubernetes.Clientset, obj runtime.Object, na
 		}
 
 	case *appsv1.StatefulSet:
+		o.Namespace = namespace
 		// 尝试获取现有的StatefulSet
 		_, err := client.AppsV1().StatefulSets(namespace).Get(context.TODO(), o.Name, metav1.GetOptions{})
 		if err != nil {
@@ -367,6 +370,7 @@ func applyResourceToCluster(client *kubernetes.Clientset, obj runtime.Object, na
 		}
 
 	case *corev1.Service:
+		o.Namespace = namespace
 		// 尝试获取现有的Service
 		_, err := client.CoreV1().Services(namespace).Get(context.TODO(), o.Name, metav1.GetOptions{})
 		if err != nil {
@@ -386,8 +390,31 @@ func applyResourceToCluster(client *kubernetes.Clientset, obj runtime.Object, na
 				return fmt.Errorf("更新Service失败: %v", err)
 			}
 		}
+	case *corev1.ConfigMap:
+		o.Namespace = namespace
+		//获取当前现有的configmap
+		_,err := client.CoreV1().ConfigMaps(namespace).Get(context.TODO(), o.Name, metav1.GetOptions{})
+		if err!= nil {
+			if errors.IsNotFound(err) {
+				// 如果不存在，则创建
+				_, err = client.CoreV1().ConfigMaps(namespace).Create(context.TODO(), o, metav1.CreateOptions{})
+				if err != nil {
+					return fmt.Errorf("创建ConfigMap失败: %v", err)
+				}
+			} else {
+				return fmt.Errorf("获取ConfigMap失败: %v", err)
+			}
+		} else {
+			// 如果存在，则更新
+			_, err = client.CoreV1().ConfigMaps(namespace).Update(context.TODO(), o, metav1.UpdateOptions{})
+			if err != nil {
+				return fmt.Errorf("更新ConfigMap失败: %v", err)
+			}
+		}
+
 
 	case *corev1.Secret:
+		o.Namespace = namespace
 		// 尝试获取现有的Secret
 		_, err := client.CoreV1().Secrets(namespace).Get(context.TODO(), o.Name, metav1.GetOptions{})
 		if err != nil {
@@ -409,6 +436,7 @@ func applyResourceToCluster(client *kubernetes.Clientset, obj runtime.Object, na
 		}
 
 	case *corev1.PersistentVolumeClaim:
+		o.Namespace = namespace
 		// 尝试获取现有的PVC
 		_, err := client.CoreV1().PersistentVolumeClaims(namespace).Get(context.TODO(), o.Name, metav1.GetOptions{})
 		if err != nil {
@@ -445,6 +473,7 @@ func applyResourceToCluster(client *kubernetes.Clientset, obj runtime.Object, na
 		}
 
 	case *batchv1.CronJob:
+		o.Namespace = namespace
 		// 尝试获取现有的CronJob
 		_, err := client.BatchV1().CronJobs(namespace).Get(context.TODO(), o.Name, metav1.GetOptions{})
 		if err != nil {
@@ -466,6 +495,7 @@ func applyResourceToCluster(client *kubernetes.Clientset, obj runtime.Object, na
 		}
 
 	case *batchv1beta1.CronJob:
+		o.Namespace = namespace
 		// 尝试获取现有的CronJob (v1beta1)
 		_, err := client.BatchV1beta1().CronJobs(namespace).Get(context.TODO(), o.Name, metav1.GetOptions{})
 		if err != nil {
@@ -487,6 +517,7 @@ func applyResourceToCluster(client *kubernetes.Clientset, obj runtime.Object, na
 		}
 
 	case *batchv1.Job:
+		o.Namespace = namespace
 		// 尝试获取现有的Job
 		_, err := client.BatchV1().Jobs(namespace).Get(context.TODO(), o.Name, metav1.GetOptions{})
 		if err != nil {
