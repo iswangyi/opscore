@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"opscore/internal/api"
 	kubeapi "opscore/internal/api/kubeapi"
+	"opscore/internal/datamigrate"
 	"opscore/internal/log"
 	"opscore/internal/middleware"
 
@@ -109,6 +110,35 @@ func SetupRouter() *gin.Engine {
 		//kubernetesRoutes.GET("/namespaces/:namespace/daemonsets", kubernetes.GetDaemonSetsInNamespace)
 		//kubernetesRoutes.GET("/namespaces/:namespace/jobs", kubernetes.GetJobsInNamespace)
 		//kubernetesRoutes.GET("/namespaces/:namespace/cronjobs", kubernetes.GetCronJobsInNamespace)
+	}
+
+	// 数据迁移 API 路由组
+	dataMigrateHandler := datamigrate.NewAPIHandler()
+	dataMigrateRoutes := r.Group("/datamigrate")
+	{
+		// 创建迁移任务
+		dataMigrateRoutes.POST("/tasks", dataMigrateHandler.CreateMigrationTaskHandler)
+
+		// 开始迁移任务
+		dataMigrateRoutes.POST("/tasks/:taskId/start", dataMigrateHandler.StartMigrationHandler)
+
+		// 获取任务进度
+		dataMigrateRoutes.GET("/tasks/:taskId/progress", dataMigrateHandler.GetTaskProgressHandler)
+
+		// 列出所有任务
+		dataMigrateRoutes.GET("/tasks", dataMigrateHandler.ListTasksHandler)
+
+		// 取消任务
+		dataMigrateRoutes.POST("/tasks/:taskId/cancel", dataMigrateHandler.CancelTaskHandler)
+
+		// 测试数据源连接
+		dataMigrateRoutes.POST("/test-connection", dataMigrateHandler.TestConnectionHandler)
+
+		// 列出数据库
+		dataMigrateRoutes.POST("/databases", dataMigrateHandler.ListDatabasesHandler)
+
+		// 列出表
+		dataMigrateRoutes.POST("/tables", dataMigrateHandler.ListTablesHandler)
 	}
 
 	// VMware 路由示例 (来自现有代码)

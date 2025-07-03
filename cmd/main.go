@@ -3,11 +3,15 @@ package main
 import (
 	"flag"
 	"opscore/config"
+	"opscore/internal/datamigrate"
 	"opscore/internal/db"
 	"opscore/internal/kubernetes"
 	"opscore/internal/log"
 	"opscore/internal/router"
 	"os"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 var (
@@ -19,37 +23,53 @@ var (
 func main() {
 	flag.Parse()
 
-	config, err := config.SetupConfig()
-	if err != nil {
-		panic("failed to setup config: " + err.Error())
-	}
-
+	// 初始化日志
 	logger, err := log.InitLogger()
 	if err != nil {
-		panic("failed to initialize logger: " + err.Error())
+		panic(err)
 	}
 	defer logger.Sync()
-	logger.Info("Custom logger initialized")
 
-	_, err = db.NewGlobalDB()
+	logger.Info("Starting OpsCore application")
+
+	// 加载配置
+	cfg, err := config.SetupConfig()
 	if err != nil {
-		panic("failed to initialize database: " + err.Error())
+		logger.Fatal("Failed to load config", zap.Error(err))
 	}
 
+	// 初始化数据库
+	_, err = db.NewGlobalDB()
+	if err != nil {
+		logger.Fatal("Failed to initialize database", zap.Error(err))
+	}
+
+	// 执行数据库迁移
+	if err := kubernetes.Migrate(); err != nil {
+		logger.Fatal("Failed to migrate kubernetes database", zap.Error(err))
+	}
+
+	// 执行数据迁移模块的数据库迁移
+	if err := datamigrate.Migrate(); err != nil {
+		logger.Fatal("Failed to migrate datamigrate database", zap.Error(err))
+	}
+
+	// 如果只是迁移数据库，则退出
 	if *migrate {
-		if err := kubernetes.Migrate(); err!= nil {
-			panic("failed to auto migrate k8s database: " + err.Error())
-		}
-		logger.Info("Database initialized")
+		logger.Info("Database migration completed")
 		os.Exit(0)
 	}
 
-	logger.Info("Database initialized")
+	// 设置Gin模式
+	gin.SetMode(gin.ReleaseMode)
 
-	go config.WatchConfigChange(logger)
-
+	// 设置路由
 	r := router.SetupRouter()
 
-	// Listen and Server in 0.0.0.0:8080
-	r.Run(":8080")
+	// 启动服务器
+	port := "8080" // 默认端口
+	logger.Info("Server starting", zap.String("port", port))
+	if err := r.Run(":" + port); err != nil {
+		logger.Fatal("Failed to start server", zap.Error(err))
+	}
 }
