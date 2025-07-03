@@ -49,7 +49,7 @@ func ExportResources(id , namespace string, resourceTypes []string) ([]byte, err
 	// 如果未指定资源类型，则使用默认资源类型
 	if len(resourceTypes) == 0 {
 		resourceTypes = []string{
-			"deployments", "statefulsets", "services", 
+			"deployments", "statefulsets", "services", "configmaps" ,
 			"secrets", "pvcs", "pvs", "cronjobs", "jobs",
 		}
 	}
@@ -105,6 +105,20 @@ func ExportResources(id , namespace string, resourceTypes []string) ([]byte, err
 				resources = append(resources, item)
 			}
 
+		case "configmaps":
+			configMapList, err := clientset.CoreV1().ConfigMaps(namespace).List(context.TODO(), metav1.ListOptions{})
+			if err!= nil {
+				return nil, fmt.Errorf("获取ConfigMaps失败: %v", err)
+			}
+			for i := range configMapList.Items {
+				item := &configMapList.Items[i]
+				item.APIVersion = "v1"
+				item.Kind = "ConfigMap"
+				if item.Name == "kube-root-ca.crt" {
+					continue
+				}
+				resources = append(resources, item)
+			}
 		case "secrets":
 			secretList, err := clientset.CoreV1().Secrets(namespace).List(context.TODO(), metav1.ListOptions{})
 			if err != nil {
@@ -193,7 +207,7 @@ func ExportResources(id , namespace string, resourceTypes []string) ([]byte, err
 			}
 
 			// 写入缓冲区
-			buffer.WriteString("---\n")
+			buffer.WriteString("--delimiter--\n")
 			buffer.Write(yamlBytes)
 			buffer.WriteString("\n")
 		}

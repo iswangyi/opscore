@@ -28,7 +28,7 @@ func ExportResourcesHandler(c *gin.Context) {
 	var resp ExportResourcesResponse
 	if err := c.ShouldBindJSON(&req); err != nil {
 		logger.Error("ExportResourcesHandler", zap.Error(err))
-		resp := ExportResourcesResponse{Code: 1, Msg: err.Error(), Data: nil}
+		resp = ExportResourcesResponse{Code: 1, Msg: err.Error(), Data: nil}
 		c.JSON(http.StatusOK, resp)
 		return
 	}
@@ -36,13 +36,13 @@ func ExportResourcesHandler(c *gin.Context) {
 	data, err := kubernetes.ExportResources(req.ClusterID, req.Namespace, req.ResourceTypes)
 	if err != nil {
 		logger.Error("ExportResourcesHandler", zap.Error(err))
-		resp := ExportResourcesResponse{Code: 1, Msg: err.Error(), Data: nil}
+		resp = ExportResourcesResponse{Code: 1, Msg: err.Error(), Data: nil}
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
 	// data 转换为 string
 	str := string(data)
-	strs := strings.Split(str, "---")
+	strs := strings.Split(str, "--delimiter--")
 
 	resp = ExportResourcesResponse{Code: 0, Msg: "success",Data: strs }
 	c.JSON(http.StatusOK, resp)
