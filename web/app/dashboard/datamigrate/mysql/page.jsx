@@ -601,8 +601,29 @@ export default function MysqlMigratePage() {
           {compareLoadingMap[compareResult?.task_id] ? <div>对比中...</div> : compareError ? <div className="text-red-500">{compareError}</div> : compareResult && (
             <>
               <div className="flex items-center justify-between">
-                <div>
-                  源库表数：{compareResult.table_count_source}，目标库表数：{compareResult.table_count_target}，{compareResult.table_count_equal ? <span className="text-green-600">表数量一致</span> : <span className="text-red-500">表数量不一致</span>}
+                <div className="space-y-1">
+                  {/* 总数统计 */}
+                  <div>
+                    总源库表数：{compareResult.table_count_source}，总目标库表数：{compareResult.table_count_target}，
+                    {compareResult.table_count_equal ? <span className="text-green-600">表数量一致</span> : <span className="text-red-500">表数量不一致</span>}
+                  </div>
+                  {/* 分库统计 */}
+                  {(() => {
+                    // 按库分组统计
+                    const dbMap = {};
+                    (compareResult.tables || []).forEach(row => {
+                      if (!row.database) return;
+                      if (!dbMap[row.database]) dbMap[row.database] = { source: 0, target: 0 };
+                      if (row.exists_in_source) dbMap[row.database].source++;
+                      if (row.exists_in_target) dbMap[row.database].target++;
+                    });
+                    return Object.entries(dbMap).map(([db, cnt]) => (
+                      <div key={db} className="text-xs pl-2">
+                        <span className="font-bold">{db}</span>：源库表数 {cnt.source}，目标库表数 {cnt.target}，
+                        {cnt.source === cnt.target ? <span className="text-green-600">一致</span> : <span className="text-red-500">不一致</span>}
+                      </div>
+                    ));
+                  })()}
                 </div>
                 <Button size="sm" variant={showOnlyDiff ? "default" : "outline"} onClick={() => setShowOnlyDiff(v => !v)}>
                   {showOnlyDiff ? "显示全部" : "只显示差异"}
