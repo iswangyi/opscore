@@ -5,7 +5,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"opscore/internal/db"
 	"opscore/internal/log"
+	"opscore/internal/model"
 	"go.uber.org/zap"
+
 )
 
 
@@ -31,9 +33,9 @@ func ListNamespace(clusterID string) ( []string,error) {
 	return namespaces,nil
 }
 
-func GetClusterByClusterID(clusterID string) (*K8sClusterMetaData,error) {
+func GetClusterByClusterID(clusterID string) (*model.K8sClusterMetaData,error) {
 	logger := log.GetLogger()
-	var cluster K8sClusterMetaData
+	var cluster model.K8sClusterMetaData
 	db := db.DBInstance
 	err := db.Where("id = ?", clusterID).First(&cluster).Error
 	if err!= nil {

@@ -3,12 +3,11 @@ package main
 import (
 	"flag"
 	"opscore/config"
-	"opscore/internal/datamigrate"
 	"opscore/internal/db"
-	"opscore/internal/kubernetes"
 	"opscore/internal/log"
-	"opscore/internal/router"
 	"os"
+	"opscore/internal/api"
+
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -33,7 +32,7 @@ func main() {
 	logger.Info("Starting OpsCore application")
 
 	// 加载配置
-	cfg, err := config.SetupConfig()
+	_, err = config.SetupConfig()
 	if err != nil {
 		logger.Fatal("Failed to load config", zap.Error(err))
 	}
@@ -45,12 +44,12 @@ func main() {
 	}
 
 	// 执行数据库迁移
-	if err := kubernetes.Migrate(); err != nil {
+	if err := db.Migrate(); err != nil {
 		logger.Fatal("Failed to migrate kubernetes database", zap.Error(err))
 	}
 
 	// 执行数据迁移模块的数据库迁移
-	if err := datamigrate.Migrate(); err != nil {
+	if err := db.Migrate(); err != nil {
 		logger.Fatal("Failed to migrate datamigrate database", zap.Error(err))
 	}
 
@@ -64,7 +63,7 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 
 	// 设置路由
-	r := router.SetupRouter()
+	r := api.SetupRouter()
 
 	// 启动服务器
 	port := "8080" // 默认端口

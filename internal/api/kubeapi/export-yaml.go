@@ -1,8 +1,8 @@
-package api
+package kubeapi
 
 import (
 	"net/http"
-	"opscore/internal/kubernetes"
+	"opscore/internal/service/kubernetes"
 	"opscore/internal/log"
 	"strings"
 

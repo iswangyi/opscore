@@ -1,10 +1,10 @@
-package router
+package api
 
 import (
 	"net/http"
-	"opscore/internal/api"
-	kubeapi "opscore/internal/api/kubeapi"
-	"opscore/internal/datamigrate"
+	"opscore/internal/api/datamigrate"
+	"opscore/internal/api/kubeapi"
+	"opscore/internal/api/vmware"
 	"opscore/internal/log"
 	"opscore/internal/middleware"
 
@@ -139,11 +139,14 @@ func SetupRouter() *gin.Engine {
 
 		// 列出表
 		dataMigrateRoutes.POST("/tables", dataMigrateHandler.ListTablesHandler)
+
+		// 数据对比
+		dataMigrateRoutes.POST("/compare", dataMigrateHandler.CompareHandler)
 	}
 
 	// VMware 路由示例 (来自现有代码)
 	unauthorized := r.Group("/vmware")
-	unauthorized.GET("list", api.GetVMwareMachine)
+	unauthorized.GET("list", vmware.GetVMwareMachine)
 
 	return r
 }

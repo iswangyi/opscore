@@ -1,7 +1,7 @@
-package api
+package kubeapi
 
 import (
-	"opscore/internal/kubernetes"
+	"opscore/internal/service/kubernetes"
 )
 
 type ListNamespaceResponse struct {

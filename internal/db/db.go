@@ -1,9 +1,11 @@
 package db
 
 import (
-	//sqllite
+	"fmt"
+	"os"
+
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	 "gorm.io/driver/sqlite"
 )
 
 type DB struct {
@@ -15,8 +17,34 @@ var (
 )
 
 func NewGlobalDB() (*DB, error) {
-	db, err := gorm.Open(sqlite.Open("/root/opscore/test.db"), &gorm.Config{})
+	// 支持从环境变量读取配置
+	host := os.Getenv("MYSQL_HOST")
+	if host == "" {
+		host = "127.0.0.1"
+	}
+	port := os.Getenv("MYSQL_PORT")
+	if port == "" {
+		port = "3306"
+	}
+	user := os.Getenv("MYSQL_USER")
+	if user == "" {
+		user = "root"
+	}
+	password := os.Getenv("MYSQL_PASSWORD")
+	if password == "" {
+		password = "1q2w3e4r"
+	}
+	dbname := os.Getenv("MYSQL_DATABASE")
+	if dbname == "" {
+		dbname = "test"
+	}
+	charset := os.Getenv("MYSQL_CHARSET")
+	if charset == "" {
+		charset = "utf8mb4"
+	}
 
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=Local", user, password, host, port, dbname, charset)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}

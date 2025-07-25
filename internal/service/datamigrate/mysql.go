@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	coreError "opscore/error"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -33,7 +35,7 @@ func (m *MySQLDataSource) Connect(config DataSourceConfig) error {
 
 	// 配置GORM
 	gormConfig := &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent), // 静默日志
+		Logger: logger.Default.LogMode(logger.Silent),
 	}
 
 	db, err := gorm.Open(mysql.Open(dsn), gormConfig)
@@ -58,7 +60,7 @@ func (m *MySQLDataSource) Connect(config DataSourceConfig) error {
 // TestConnection 测试连接
 func (m *MySQLDataSource) TestConnection() error {
 	if m.db == nil {
-		return ErrConnectionFailed
+		return coreError.ErrConnectionFailed
 	}
 
 	sqlDB, err := m.db.DB()
@@ -92,90 +94,16 @@ func (m *MySQLDataSource) ListTables(database string) ([]string, error) {
 
 // GetTableSchema 获取表结构
 func (m *MySQLDataSource) GetTableSchema(database, table string) (*TableSchema, error) {
+	// 直接用 SHOW CREATE TABLE 判断表是否存在
+	var tableName, createSQL string
+	row := m.db.Raw(fmt.Sprintf("SHOW CREATE TABLE `%s`.`%s`", database, table)).Row()
+	if err := row.Scan(&tableName, &createSQL); err != nil {
+		return nil, fmt.Errorf("failed to get table DDL: %w", err)
+	}
+	// 这里只返回 TableSchema 的 name 字段，详细解析 DDL 可后续扩展
 	schema := &TableSchema{
 		Name: table,
 	}
-
-	// 获取列信息
-	columnsQuery := fmt.Sprintf(`
-		SELECT 
-			COLUMN_NAME,
-			DATA_TYPE,
-			IS_NULLABLE,
-			COLUMN_DEFAULT,
-			COLUMN_COMMENT
-		FROM INFORMATION_SCHEMA.COLUMNS 
-		WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
-		ORDER BY ORDINAL_POSITION
-	`, database, table)
-
-	rows, err := m.db.Raw(columnsQuery, database, table).Rows()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get table columns: %w", err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var column ColumnInfo
-		var isNullable string
-		var defaultValue sql.NullString
-
-		err := rows.Scan(
-			&column.Name,
-			&column.Type,
-			&isNullable,
-			&defaultValue,
-			&column.Comment,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("failed to scan column info: %w", err)
-		}
-
-		column.IsNullable = isNullable == "YES"
-		if defaultValue.Valid {
-			column.DefaultValue = defaultValue.String
-		}
-
-		schema.Columns = append(schema.Columns, column)
-	}
-
-	// 获取索引信息
-	indexesQuery := fmt.Sprintf(`
-		SELECT INDEX_NAME 
-		FROM INFORMATION_SCHEMA.STATISTICS 
-		WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
-		GROUP BY INDEX_NAME
-	`, database, table)
-
-	indexRows, err := m.db.Raw(indexesQuery, database, table).Rows()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get table indexes: %w", err)
-	}
-	defer indexRows.Close()
-
-	for indexRows.Next() {
-		var indexName string
-		err := indexRows.Scan(&indexName)
-		if err != nil {
-			return nil, fmt.Errorf("failed to scan index name: %w", err)
-		}
-		schema.Indexes = append(schema.Indexes, indexName)
-	}
-
-	// 获取表注释
-	tableCommentQuery := fmt.Sprintf(`
-		SELECT TABLE_COMMENT 
-		FROM INFORMATION_SCHEMA.TABLES 
-		WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
-	`, database, table)
-
-	var tableComment string
-	err = m.db.Raw(tableCommentQuery, database, table).Scan(&tableComment).Error
-	if err != nil {
-		return nil, fmt.Errorf("failed to get table comment: %w", err)
-	}
-	schema.Comment = tableComment
-
 	return schema, nil
 }
 
@@ -230,16 +158,16 @@ func (m *MySQLDataSource) ReadRows(database, table string, opts ReadOptions) ([]
 	return result, nil
 }
 
-// WriteRows 写入数据行
+// WriteRows写入数据行
 func (m *MySQLDataSource) WriteRows(database, table string, rows []Row, opts WriteOptions) error {
 	if len(rows) == 0 {
 		return nil
 	}
 
-	// 获取列名
-	columns := make([]string, 0)
-	for col := range rows[0] {
-		columns = append(columns, col)
+	// 获取目标表字段顺序
+	columns, err := m.GetTableColumns(database, table)
+	if err != nil {
+		return fmt.Errorf("failed to get table columns: %w", err)
 	}
 
 	// 构建INSERT语句
@@ -248,7 +176,7 @@ func (m *MySQLDataSource) WriteRows(database, table string, rows []Row, opts Wri
 		placeholders[i] = "?"
 	}
 
-	// 批量插入
+	maxRetry := 3
 	for i := 0; i < len(rows); i += opts.BatchSize {
 		end := i + opts.BatchSize
 		if end > len(rows) {
@@ -260,7 +188,14 @@ func (m *MySQLDataSource) WriteRows(database, table string, rows []Row, opts Wri
 
 		for _, row := range batch {
 			for _, col := range columns {
-				values = append(values, row[col])
+				value, exists := row[col]
+				if !exists {
+					values = append(values, nil)
+				} else if v, ok := value.([]uint8); ok {
+					values = append(values, string(v))
+				} else {
+					values = append(values, value)
+				}
 			}
 		}
 
@@ -277,8 +212,28 @@ func (m *MySQLDataSource) WriteRows(database, table string, rows []Row, opts Wri
 			strings.Join(batchPlaceholders, ", "),
 		)
 
-		err := m.db.Exec(batchQuery, values...).Error
-		if err != nil {
+		retry := 0
+		for {
+			err := m.db.Exec(batchQuery, values...).Error
+			if err == nil {
+				break
+			}
+			// 检查是否为连接失效类错误
+			errStr := err.Error()
+			if (strings.Contains(errStr, "invalid connection") || strings.Contains(errStr, "broken pipe")) && retry < maxRetry {
+				retry++
+				fmt.Printf("[WriteRows] Detected invalid connection, retrying %d/%d...\n", retry, maxRetry)
+				// 关闭并重连
+				if cerr := m.Close(); cerr != nil {
+					fmt.Printf("[WriteRows] Close connection error: %v\n", cerr)
+				}
+				if cerr := m.Connect(m.config); cerr != nil {
+					fmt.Printf("[WriteRows] Reconnect error: %v\n", cerr)
+					return fmt.Errorf("failed to reconnect: %w", cerr)
+				}
+				continue
+			}
+			fmt.Printf("[WriteRows] Failed to write batch rows: %v\n", err)
 			return fmt.Errorf("failed to write batch rows: %w", err)
 		}
 	}
@@ -289,7 +244,7 @@ func (m *MySQLDataSource) WriteRows(database, table string, rows []Row, opts Wri
 // CreateTable 创建表
 func (m *MySQLDataSource) CreateTable(database string, schema *TableSchema) error {
 	if schema == nil || len(schema.Columns) == 0 {
-		return ErrInvalidSchema
+		return coreError.ErrInvalidSchema
 	}
 
 	// 构建CREATE TABLE语句
@@ -347,10 +302,65 @@ func (m *MySQLDataSource) GetRowCount(database, table string) (int64, error) {
 	var count int64
 	err := m.db.Raw(query).Scan(&count).Error
 	if err != nil {
+		fmt.Printf("[GetRowCount] SQL: %s, error: %v\n", query, err)
 		return 0, fmt.Errorf("failed to get row count: %w", err)
 	}
-
+	fmt.Printf("[GetRowCount] SQL: %s, count: %d\n", query, count)
 	return count, nil
+}
+
+// CreateDatabaseIfNotExists 如果数据库不存在则创建
+func (m *MySQLDataSource) CreateDatabaseIfNotExists(database string) error {
+	if database == "" {
+		return fmt.Errorf("database name is empty")
+	}
+	query := fmt.Sprintf("CREATE DATABASE IF NOT EXISTS `%s` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci'", database)
+	if m.db == nil {
+		// 临时新建无 database 连接
+		dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/?charset=%s&parseTime=True&loc=Local",
+			m.config.Username,
+			m.config.Password,
+			m.config.Host,
+			m.config.Port,
+			m.getCharset(),
+		)
+		gormConfig := &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Silent),
+		}
+		db, err := gorm.Open(mysql.Open(dsn), gormConfig)
+		if err != nil {
+			return fmt.Errorf("failed to connect to MySQL for create database: %w", err)
+		}
+		err = db.Exec(query).Error
+		// 关闭临时连接
+		sqlDB, _ := db.DB()
+		if sqlDB != nil {
+			sqlDB.Close()
+		}
+		return err
+	}
+	// 用已有连接
+	return m.db.Exec(query).Error
+}
+
+// CreateTableFromSource 通过源库 SHOW CREATE TABLE 直接在目标库创建表
+func (m *MySQLDataSource) CreateTableFromSource(source *MySQLDataSource, sourceDB, table, targetDB string) error {
+	if source == nil || source.db == nil {
+		return fmt.Errorf("source datasource is nil")
+	}
+	// 获取源表 DDL
+	var tableName, createSQL string
+	row := source.db.Raw(fmt.Sprintf("SHOW CREATE TABLE `%s`.`%s`", sourceDB, table)).Row()
+	if err := row.Scan(&tableName, &createSQL); err != nil {
+		return fmt.Errorf("failed to get source table DDL: %w", err)
+	}
+	// 替换 DDL 里的库名为目标库
+	createSQL = strings.Replace(createSQL, fmt.Sprintf("CREATE TABLE `%s`", table), fmt.Sprintf("CREATE TABLE `%s`.`%s`", targetDB, table), 1)
+	// 在目标库执行
+	if err := m.db.Exec(createSQL).Error; err != nil {
+		return fmt.Errorf("failed to create table on target: %w", err)
+	}
+	return nil
 }
 
 // Close 关闭连接
@@ -371,4 +381,32 @@ func (m *MySQLDataSource) getCharset() string {
 		return m.config.Charset
 	}
 	return "utf8mb4"
+}
+
+// keysOfRow 返回 Row 的所有 key
+func keysOfRow(row Row) []string {
+	keys := make([]string, 0, len(row))
+	for k := range row {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+func (m *MySQLDataSource) GetTableColumns(database, table string) ([]string, error) {
+	var columns []string
+	query := fmt.Sprintf("SHOW COLUMNS FROM `%s`.`%s`", database, table)
+	rows, err := m.db.Raw(query).Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var field, colType, null, key, extra string
+		var def sql.NullString
+		if err := rows.Scan(&field, &colType, &null, &key, &def, &extra); err != nil {
+			return nil, err
+		}
+		columns = append(columns, field)
+	}
+	return columns, nil
 }

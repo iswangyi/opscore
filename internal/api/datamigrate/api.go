@@ -4,7 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
+	coreError "opscore/error"
 	"opscore/internal/log"
+	"opscore/internal/model"
+	"opscore/internal/service/datamigrate"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -12,21 +15,21 @@ import (
 
 // APIHandler 数据迁移API处理器
 type APIHandler struct {
-	service *MigrationService
+	service *datamigrate.MigrationService
 	logger  *zap.Logger
 }
 
 // NewAPIHandler 创建API处理器
 func NewAPIHandler() *APIHandler {
 	return &APIHandler{
-		service: NewMigrationService(),
+		service: datamigrate.NewMigrationService(),
 		logger:  log.GetLogger(),
 	}
 }
 
 // CreateMigrationTaskHandler 创建迁移任务
 func (h *APIHandler) CreateMigrationTaskHandler(c *gin.Context) {
-	var req CreateMigrationRequest
+	var req datamigrate.CreateMigrationRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Error("Failed to bind JSON", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -156,7 +159,7 @@ func (h *APIHandler) ListTasksHandler(c *gin.Context) {
 		end = total
 	}
 
-	var pageTasks []*MigrationTask
+	var pageTasks []*model.MigrationTask
 	if start < total {
 		pageTasks = tasks[start:end]
 	}
@@ -203,7 +206,7 @@ func (h *APIHandler) CancelTaskHandler(c *gin.Context) {
 
 // TestConnectionHandler 测试数据源连接
 func (h *APIHandler) TestConnectionHandler(c *gin.Context) {
-	var config DataSourceConfig
+	var config datamigrate.DataSourceConfig
 	if err := c.ShouldBindJSON(&config); err != nil {
 		h.logger.Error("Failed to bind JSON", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -214,7 +217,7 @@ func (h *APIHandler) TestConnectionHandler(c *gin.Context) {
 	}
 
 	// 创建数据源
-	ds, err := h.service.factory.NewDataSource(config.Type)
+	ds, err := h.service.Factory.NewDataSource(model.DataSourceType(config.Type))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 1,
@@ -249,7 +252,7 @@ func (h *APIHandler) TestConnectionHandler(c *gin.Context) {
 
 // ListDatabasesHandler 列出数据库
 func (h *APIHandler) ListDatabasesHandler(c *gin.Context) {
-	var config DataSourceConfig
+	var config datamigrate.DataSourceConfig
 	if err := c.ShouldBindJSON(&config); err != nil {
 		h.logger.Error("Failed to bind JSON", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -260,7 +263,7 @@ func (h *APIHandler) ListDatabasesHandler(c *gin.Context) {
 	}
 
 	// 创建数据源
-	ds, err := h.service.factory.NewDataSource(config.Type)
+	ds, err := h.service.Factory.NewDataSource(model.DataSourceType(config.Type))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 1,
@@ -299,8 +302,8 @@ func (h *APIHandler) ListDatabasesHandler(c *gin.Context) {
 // ListTablesHandler 列出表
 func (h *APIHandler) ListTablesHandler(c *gin.Context) {
 	var req struct {
-		DataSourceConfig `json:"config"`
-		Database         string `json:"database"`
+		datamigrate.DataSourceConfig `json:"config"`
+		Database                     string `json:"database"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -312,6 +315,9 @@ func (h *APIHandler) ListTablesHandler(c *gin.Context) {
 		return
 	}
 
+	// 新增日志
+	h.logger.Info("ListTablesHandler 参数", zap.Any("req", req), zap.String("type", string(req.Type)))
+
 	if req.Database == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 1,
@@ -321,7 +327,7 @@ func (h *APIHandler) ListTablesHandler(c *gin.Context) {
 	}
 
 	// 创建数据源
-	ds, err := h.service.factory.NewDataSource(req.Type)
+	ds, err := h.service.Factory.NewDataSource(model.DataSourceType(req.Type))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 1,
@@ -357,16 +363,152 @@ func (h *APIHandler) ListTablesHandler(c *gin.Context) {
 	})
 }
 
+// CompareHandler 比对数据源
+func (h *APIHandler) CompareHandler(c *gin.Context) {
+	var req datamigrate.CompareRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Error("Failed to bind JSON", zap.Error(err))
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": 1,
+			"msg":  "Invalid request body: " + err.Error(),
+		})
+		return
+	}
+
+	// 连接源库
+	srcDS, err := h.service.Factory.NewDataSource(model.DataSourceType(req.SourceConfig.Type))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": 1,
+			"msg":  "Unsupported source data source type: " + req.SourceConfig.Type,
+		})
+		return
+	}
+	defer srcDS.Close()
+	if err := srcDS.Connect(req.SourceConfig); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": 1,
+			"msg":  "源库连接失败: " + err.Error(),
+		})
+		return
+	}
+
+	// 连接目标库
+	tgtDS, err := h.service.Factory.NewDataSource(model.DataSourceType(req.TargetConfig.Type))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": 1,
+			"msg":  "Unsupported target data source type: " + req.TargetConfig.Type,
+		})
+		return
+	}
+	defer tgtDS.Close()
+	if err := tgtDS.Connect(req.TargetConfig); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": 1,
+			"msg":  "目标库连接失败: " + err.Error(),
+		})
+		return
+	}
+
+	// 获取目标库所有表
+	tgtTables, err := tgtDS.ListTables(req.Database)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": 1,
+			"msg":  "Failed to list target tables: " + err.Error(),
+		})
+		return
+	}
+	tgtTableSet := map[string]struct{}{}
+	for _, t := range tgtTables {
+		tgtTableSet[req.Database+"."+t] = struct{}{}
+	}
+
+	// 获取源库所有表
+	srcTables, err := srcDS.ListTables(req.Database)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": 1,
+			"msg":  "Failed to list source tables: " + err.Error(),
+		})
+		return
+	}
+	srcTableSet := map[string]struct{}{}
+	for _, t := range srcTables {
+		srcTableSet[req.Database+"."+t] = struct{}{}
+	}
+
+	// 比对
+	var results []datamigrate.TableCompareResult
+	for _, table := range req.Tables {
+		_, tbl, err := datamigrate.ParseTableName(req.Database + "." + table)
+		if err != nil {
+			h.logger.Error("Failed to parse table name", zap.String("table", table), zap.Error(err))
+			continue
+		}
+		_, srcExists := srcTableSet[req.Database+"."+tbl]
+		_, tgtExists := tgtTableSet[req.Database+"."+tbl]
+		var srcCount, tgtCount int64
+		if srcExists {
+			srcCount, err = srcDS.GetRowCount(req.Database, tbl)
+			if err != nil {
+				h.logger.Error("Failed to get row count for source table", zap.String("table", tbl), zap.Error(err))
+				results = append(results, datamigrate.TableCompareResult{
+					Table:          table,
+					ExistsInSource: srcExists,
+					ExistsInTarget: tgtExists,
+					RowCountSource: srcCount,
+					RowCountTarget: tgtCount,
+				})
+				continue
+			}
+		}
+		if tgtExists {
+			tgtCount, err = tgtDS.GetRowCount(req.Database, tbl)
+			if err != nil {
+				h.logger.Error("Failed to get row count for target table", zap.String("table", tbl), zap.Error(err))
+				results = append(results, datamigrate.TableCompareResult{
+					Table:          table,
+					ExistsInSource: srcExists,
+					ExistsInTarget: tgtExists,
+					RowCountSource: srcCount,
+					RowCountTarget: tgtCount,
+				})
+				continue
+			}
+		}
+		results = append(results, datamigrate.TableCompareResult{
+			Table:          table,
+			ExistsInSource: srcExists,
+			ExistsInTarget: tgtExists,
+			RowCountSource: srcCount,
+			RowCountTarget: tgtCount,
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"msg":  "success",
+		"data": datamigrate.CompareResponse{
+			TableCountEqual:  len(srcTables) == len(tgtTables),
+			TableCountSource: len(srcTables),
+			TableCountTarget: len(tgtTables),
+			Tables:           results,
+		},
+	})
+}
+
 // validateCreateRequest 验证创建请求
-func (h *APIHandler) validateCreateRequest(req *CreateMigrationRequest) error {
+func (h *APIHandler) validateCreateRequest(req *datamigrate.CreateMigrationRequest) error {
 	if req.SourceConfig.Type == "" {
-		return ErrInvalidConfig
+		return coreError.ErrInvalidConfig
 	}
 	if req.TargetConfig.Type == "" {
-		return ErrInvalidConfig
+		return coreError.ErrInvalidConfig
 	}
 	if req.Database == "" {
-		return ErrInvalidConfig
+		return coreError.ErrInvalidConfig
 	}
 	if req.BatchSize <= 0 {
 		req.BatchSize = 1000 // 默认批量大小

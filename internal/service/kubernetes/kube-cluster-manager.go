@@ -11,7 +11,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd" // <-- 添加这个导入
-	// 如果 K8sClusterMetaData 在此包定义，可能需要 "gorm.io/gorm"
+	"opscore/internal/model"
 )
 
 
@@ -45,7 +45,7 @@ func NewK8sClient(kubeconfigData string) (*kubernetes.Clientset, error) {
 // AddCluster 添加集群，测试连接，获取版本，并保存元数据。
 // 参数更新为 clusterName, comment, kubeconfig。
 // 返回创建的 K8sClusterMetaData 对象指针和错误。
-func AddCluster(clusterName, comment, kubeconfig string) (*K8sClusterMetaData, error) {
+func AddCluster(clusterName, comment, kubeconfig string) (*model.K8sClusterMetaData, error) {
 	logger := log.GetLogger()
 
 	// 1. 创建 Kubernetes 客户端
@@ -67,7 +67,7 @@ func AddCluster(clusterName, comment, kubeconfig string) (*K8sClusterMetaData, e
 
 	// 3. 准备要存入数据库的集群元数据
 	// K8sClusterMetaData 结构体需要确保已更新以包含这些字段
-	clusterData := K8sClusterMetaData{
+	clusterData := model.K8sClusterMetaData{
 		// gorm.Model 会自动填充 ID, CreatedAt, UpdatedAt, DeletedAt
 		ClusterName: clusterName,
 		Comment:     comment,

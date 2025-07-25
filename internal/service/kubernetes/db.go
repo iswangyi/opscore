@@ -3,6 +3,7 @@ package kubernetes
 import (
 	"fmt"
 	"opscore/internal/db"
+	"opscore/internal/model"
 )
 
 func GetClusterKubeconfigById(clusterId string) ([]byte, error) {
@@ -18,9 +19,9 @@ func GetClusterKubeconfigById(clusterId string) ([]byte, error) {
 }
 
 // GetAllClusters 从数据库中检索所有 K8sClusterMetaData。
-func GetAllClusters() ([]K8sClusterMetaData, error) {
+func GetAllClusters() ([]model.K8sClusterMetaData, error) {
 	dbInstance := db.DBInstance // 确保 db.DBInstance 已正确初始化
-	var clusters []K8sClusterMetaData
+	var clusters []model.K8sClusterMetaData
 	// 使用 GORM 的 Find 方法获取 K8sClusterMetaData 表中的所有记录
 	// 假设 K8sClusterMetaData 结构体已正确映射到数据库表名 (例如 "k8s_cluster_meta_data")
 	// GORM 会自动根据结构体名推断表名，通常是蛇形复数 (e.g., k8s_cluster_meta_data)

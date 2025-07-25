@@ -1,8 +1,8 @@
-package api
+package kubeapi
 
 import (
 	"net/http"
-	"opscore/internal/kubernetes" // 引入业务逻辑包
+	"opscore/internal/service/kubernetes" // 引入业务逻辑包
 	"opscore/internal/log"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

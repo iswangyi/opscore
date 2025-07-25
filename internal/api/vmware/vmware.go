@@ -1,7 +1,7 @@
-package api
+package vmware
 
 import (
-	"opscore/internal/vmware"
+	"opscore/internal/service/vmware"
 
 	"github.com/gin-gonic/gin"
 )

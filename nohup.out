@@ -1,0 +1,1862 @@
+2025-07-23T14:04:50.117+0800	INFO	runtime/proc.go:283	Starting OpsCore application
+2025-07-23T14:04:50.120+0800	INFO	cmd/main.go:47	Migrating kubernetes database
+2025-07-23T14:04:50.141+0800	INFO	cmd/main.go:52	Migrating kubernetes database
+2025-07-23T14:04:50.158+0800	INFO	runtime/proc.go:283	Server starting	{"port": "8080"}
+2025-07-23T14:05:18.309+0800	INFO	datamigrate/api.go:52	Created migration task	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297"}
+2025-07-23T14:05:18.309+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "POST", "path": "/datamigrate/tasks", "query": "", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.004506489, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:05:18 | 200 |    4.546048ms |   192.168.2.146 | POST     "/datamigrate/tasks"
+2025-07-23T14:05:18.334+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "GET", "path": "/datamigrate/tasks", "query": "page=1&page_size=10", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.002133983, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:05:18 | 200 |    2.226083ms |   192.168.2.146 | GET      "/datamigrate/tasks?page=1&page_size=10"
+2025-07-23T14:05:19.502+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "OPTIONS", "path": "/datamigrate/tasks/10810bb8-070e-4d71-abe1-5b21968d4297/start", "query": "", "client_ip": "192.168.2.146", "status_code": 204, "latency": 0.000012939, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:05:19 | 204 |     101.045µs |   192.168.2.146 | OPTIONS  "/datamigrate/tasks/10810bb8-070e-4d71-abe1-5b21968d4297/start"
+2025-07-23T14:05:19.508+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "POST", "path": "/datamigrate/tasks/10810bb8-070e-4d71-abe1-5b21968d4297/start", "query": "", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.002175744, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:05:19 | 200 |    2.249325ms |   192.168.2.146 | POST     "/datamigrate/tasks/10810bb8-070e-4d71-abe1-5b21968d4297/start"
+2025-07-23T14:05:19.508+0800	INFO	runtime/asm_amd64.s:1700	Starting migration task	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297"}
+2025-07-23T14:05:19.510+0800	ERROR	runtime/asm_amd64.s:1700	Failed to connect target	{"error": "failed to connect to MySQL: Error 1049 (42000): Unknown database 'nacos_config'", "localTgtCfg": {"type":"mysql","host":"172.10.6.8","port":13307,"database":"nacos_config","username":"root","password":"1q2w3e4r","charset":"utf8mb4"}}
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1700
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.302ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.417ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info_aggr`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.275ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info_beta`
+2025-07-23T14:05:19.513+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "GET", "path": "/datamigrate/tasks", "query": "page=1&page_size=10", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.00110756, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:05:19 | 200 |    1.144178ms |   192.168.2.146 | GET      "/datamigrate/tasks?page=1&page_size=10"
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.751ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info_tag`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.265ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_tags_relation`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.291ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`group_capacity`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.231ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`his_config_info`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.221ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`permissions`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.241ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`roles`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.213ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`tenant_capacity`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.205ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`tenant_info`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.226ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`users`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.237ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `qianyi`.`a`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.196ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `qianyi`.`b`
+2025-07-23T14:05:19.521+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info", "database": "nacos_config"}
+2025-07-23T14:05:19.521+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[1.090ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.464ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.361ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info'
+	
+2025-07-23T14:05:19.523+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"config_info","columns":[{"name":"id","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"id"},{"name":"data_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":"data_id"},{"name":"group_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":""},{"name":"content","type":"longtext","is_nullable":false,"default_value":"","comment":"content"},{"name":"md5","type":"varchar(32)","is_nullable":true,"default_value":"","comment":"md5"},{"name":"gmt_create","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"创建时间"},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"修改时间"},{"name":"src_user","type":"text","is_nullable":true,"default_value":"","comment":"source user"},{"name":"src_ip","type":"varchar(50)","is_nullable":true,"default_value":"","comment":"source ip"},{"name":"app_name","type":"varchar(128)","is_nullable":true,"default_value":"","comment":""},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"租户字段"},{"name":"c_desc","type":"varchar(256)","is_nullable":true,"default_value":"","comment":""},{"name":"c_use","type":"varchar(64)","is_nullable":true,"default_value":"","comment":""},{"name":"effect","type":"varchar(64)","is_nullable":true,"default_value":"","comment":""},{"name":"type","type":"varchar(64)","is_nullable":true,"default_value":"","comment":""},{"name":"c_schema","type":"text","is_nullable":true,"default_value":"","comment":""},{"name":"encrypted_data_key","type":"text","is_nullable":false,"default_value":"","comment":"秘钥"}],"indexes":["PRIMARY","uk_configinfo_datagrouptenant"],"comment":"config_info"}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.670ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.234ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.187ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.246ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:194
+[0m[33m[0.572ms] [34;1m[rows:-][0m SELECT * FROM `nacos_config`.`config_info` LIMIT 1000 OFFSET 0
+
+2025/07/23 14:05:19 [31;1m/root/opscore/internal/service/datamigrate/mysql.go:450 [35;1mError 1146 (42S02): Table 'nacos_config.config_info' doesn't exist
+[0m[33m[0.462ms] [34;1m[rows:-][0m SHOW COLUMNS FROM `nacos_config`.`config_info`
+2025-07-23T14:05:19.526+0800	ERROR	datamigrate/service.go:281	Failed to write batch	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info", "offset": 0, "error": "failed to get table columns: Error 1146 (42S02): Table 'nacos_config.config_info' doesn't exist"}
+opscore/internal/service/datamigrate.(*MigrationService).executeMigration
+	/root/opscore/internal/service/datamigrate/service.go:281
+2025-07-23T14:05:19.526+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info", "total_rows": 17, "migrated_rows": 0, "failed_rows": 17}
+2025-07-23T14:05:19.526+0800	ERROR	runtime/asm_amd64.s:1700	Table migration failed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info", "error": ""}
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1700
+2025-07-23T14:05:19.527+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info_aggr", "database": "nacos_config"}
+2025-07-23T14:05:19.527+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info_aggr"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.731ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_aggr'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.523ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_aggr'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.380ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_aggr'
+	
+2025-07-23T14:05:19.529+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"config_info_aggr","columns":[{"name":"id","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"id"},{"name":"data_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":"data_id"},{"name":"group_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"group_id"},{"name":"datum_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":"datum_id"},{"name":"content","type":"longtext","is_nullable":false,"default_value":"","comment":"内容"},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"","comment":"修改时间"},{"name":"app_name","type":"varchar(128)","is_nullable":true,"default_value":"","comment":""},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"租户字段"}],"indexes":["PRIMARY","uk_configinfoaggr_datagrouptenantdatum"],"comment":"增加租户字段"}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.630ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_aggr'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.387ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_aggr'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.414ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_aggr'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.428ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info_aggr`
+2025-07-23T14:05:19.532+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info_aggr", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:05:19.533+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info_beta", "database": "nacos_config"}
+2025-07-23T14:05:19.533+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info_beta"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.769ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_beta'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.413ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_beta'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.324ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_beta'
+	
+2025-07-23T14:05:19.535+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"config_info_beta","columns":[{"name":"id","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"id"},{"name":"data_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":"data_id"},{"name":"group_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"group_id"},{"name":"app_name","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"app_name"},{"name":"content","type":"longtext","is_nullable":false,"default_value":"","comment":"content"},{"name":"beta_ips","type":"varchar(1024)","is_nullable":true,"default_value":"","comment":"betaIps"},{"name":"md5","type":"varchar(32)","is_nullable":true,"default_value":"","comment":"md5"},{"name":"gmt_create","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"创建时间"},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"修改时间"},{"name":"src_user","type":"text","is_nullable":true,"default_value":"","comment":"source user"},{"name":"src_ip","type":"varchar(50)","is_nullable":true,"default_value":"","comment":"source ip"},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"租户字段"},{"name":"encrypted_data_key","type":"text","is_nullable":false,"default_value":"","comment":"秘钥"}],"indexes":["PRIMARY","uk_configinfobeta_datagrouptenant"],"comment":"config_info_beta"}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.589ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_beta'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.245ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_beta'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.211ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_beta'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.204ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info_beta`
+2025-07-23T14:05:19.536+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info_beta", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:05:19.538+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info_tag", "database": "nacos_config"}
+2025-07-23T14:05:19.538+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info_tag"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.739ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_tag'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.407ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_tag'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.409ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_tag'
+	
+2025-07-23T14:05:19.540+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"config_info_tag","columns":[{"name":"id","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"id"},{"name":"data_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":"data_id"},{"name":"group_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"group_id"},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"tenant_id"},{"name":"tag_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"tag_id"},{"name":"app_name","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"app_name"},{"name":"content","type":"longtext","is_nullable":false,"default_value":"","comment":"content"},{"name":"md5","type":"varchar(32)","is_nullable":true,"default_value":"","comment":"md5"},{"name":"gmt_create","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"创建时间"},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"修改时间"},{"name":"src_user","type":"text","is_nullable":true,"default_value":"","comment":"source user"},{"name":"src_ip","type":"varchar(50)","is_nullable":true,"default_value":"","comment":"source ip"}],"indexes":["PRIMARY","uk_configinfotag_datagrouptenanttag"],"comment":"config_info_tag"}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.628ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_tag'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.281ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_tag'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.342ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_tag'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.216ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info_tag`
+2025-07-23T14:05:19.542+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_info_tag", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:05:19.543+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_tags_relation", "database": "nacos_config"}
+2025-07-23T14:05:19.543+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_tags_relation"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.899ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_tags_relation'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.443ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_tags_relation'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.437ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_tags_relation'
+	
+2025-07-23T14:05:19.545+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"config_tags_relation","columns":[{"name":"id","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"id"},{"name":"tag_name","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"tag_name"},{"name":"tag_type","type":"varchar(64)","is_nullable":true,"default_value":"","comment":"tag_type"},{"name":"data_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":"data_id"},{"name":"group_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"group_id"},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"tenant_id"},{"name":"nid","type":"bigint(20)","is_nullable":false,"default_value":"","comment":""}],"indexes":["idx_tenant_id","PRIMARY","uk_configtagrelation_configidtag"],"comment":"config_tag_relation"}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.633ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_tags_relation'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.288ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_tags_relation'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.331ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_tags_relation'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.238ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_tags_relation`
+2025-07-23T14:05:19.547+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "config_tags_relation", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:05:19.548+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "group_capacity", "database": "nacos_config"}
+2025-07-23T14:05:19.548+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "group_capacity"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.706ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'group_capacity'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.391ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'group_capacity'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.348ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'group_capacity'
+	
+2025-07-23T14:05:19.550+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"group_capacity","columns":[{"name":"id","type":"bigint(20) unsigned","is_nullable":false,"default_value":"","comment":"主键ID"},{"name":"group_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"Group ID，空字符表示整个集群"},{"name":"quota","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"配额，0表示使用默认值"},{"name":"usage","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"使用量"},{"name":"max_size","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"单个配置大小上限，单位为字节，0表示使用默认值"},{"name":"max_aggr_count","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"聚合子配置最大个数，，0表示使用默认值"},{"name":"max_aggr_size","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"单个聚合数据的子配置大小上限，单位为字节，0表示使用默认值"},{"name":"max_history_count","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"最大变更历史数量"},{"name":"gmt_create","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"创建时间"},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"修改时间"}],"indexes":["PRIMARY","uk_group_id"],"comment":"集群、各Group容量信息表"}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.565ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'group_capacity'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.320ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'group_capacity'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.275ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'group_capacity'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.287ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`group_capacity`
+2025-07-23T14:05:19.552+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "group_capacity", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:05:19.554+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "his_config_info", "database": "nacos_config"}
+2025-07-23T14:05:19.554+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "his_config_info"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[1.053ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'his_config_info'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.497ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'his_config_info'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.402ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'his_config_info'
+	
+2025-07-23T14:05:19.556+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"his_config_info","columns":[{"name":"id","type":"bigint(20) unsigned","is_nullable":false,"default_value":"","comment":""},{"name":"nid","type":"bigint(20) unsigned","is_nullable":false,"default_value":"","comment":""},{"name":"data_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":""},{"name":"group_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":""},{"name":"app_name","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"app_name"},{"name":"content","type":"longtext","is_nullable":false,"default_value":"","comment":""},{"name":"md5","type":"varchar(32)","is_nullable":true,"default_value":"","comment":""},{"name":"gmt_create","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":""},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":""},{"name":"src_user","type":"text","is_nullable":true,"default_value":"","comment":""},{"name":"src_ip","type":"varchar(50)","is_nullable":true,"default_value":"","comment":""},{"name":"op_type","type":"char(10)","is_nullable":true,"default_value":"","comment":""},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"租户字段"},{"name":"encrypted_data_key","type":"text","is_nullable":false,"default_value":"","comment":"秘钥"}],"indexes":["idx_did","idx_gmt_create","idx_gmt_modified","PRIMARY"],"comment":"多租户改造"}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[1.710ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'his_config_info'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.309ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'his_config_info'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.274ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'his_config_info'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.312ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`his_config_info`
+2025-07-23T14:05:19.559+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "his_config_info", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:05:19.561+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "permissions", "database": "nacos_config"}
+2025-07-23T14:05:19.561+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "permissions"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.735ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'permissions'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.415ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'permissions'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.387ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'permissions'
+	
+2025-07-23T14:05:19.563+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"permissions","columns":[{"name":"role","type":"varchar(50)","is_nullable":false,"default_value":"","comment":""},{"name":"resource","type":"varchar(255)","is_nullable":false,"default_value":"","comment":""},{"name":"action","type":"varchar(8)","is_nullable":false,"default_value":"","comment":""}],"indexes":["uk_role_permission"],"comment":""}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.695ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'permissions'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.273ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'permissions'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.312ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'permissions'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.270ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`permissions`
+2025-07-23T14:05:19.565+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "permissions", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:05:19.567+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "roles", "database": "nacos_config"}
+2025-07-23T14:05:19.567+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "roles"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.749ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'roles'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.395ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'roles'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.655ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'roles'
+	
+2025-07-23T14:05:19.569+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"roles","columns":[{"name":"username","type":"varchar(50)","is_nullable":false,"default_value":"","comment":""},{"name":"role","type":"varchar(50)","is_nullable":false,"default_value":"","comment":""}],"indexes":["idx_user_role"],"comment":""}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.758ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'roles'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.366ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'roles'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.345ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'roles'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.339ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`roles`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:194
+[0m[33m[0.202ms] [34;1m[rows:-][0m SELECT * FROM `nacos_config`.`roles` LIMIT 1000 OFFSET 0
+
+2025/07/23 14:05:19 [31;1m/root/opscore/internal/service/datamigrate/mysql.go:450 [35;1mError 1146 (42S02): Table 'nacos_config.roles' doesn't exist
+[0m[33m[0.439ms] [34;1m[rows:-][0m SHOW COLUMNS FROM `nacos_config`.`roles`
+2025-07-23T14:05:19.572+0800	ERROR	datamigrate/service.go:281	Failed to write batch	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "roles", "offset": 0, "error": "failed to get table columns: Error 1146 (42S02): Table 'nacos_config.roles' doesn't exist"}
+opscore/internal/service/datamigrate.(*MigrationService).executeMigration
+	/root/opscore/internal/service/datamigrate/service.go:281
+2025-07-23T14:05:19.572+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "roles", "total_rows": 1, "migrated_rows": 0, "failed_rows": 1}
+2025-07-23T14:05:19.572+0800	ERROR	runtime/asm_amd64.s:1700	Table migration failed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "roles", "error": ""}
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1700
+2025-07-23T14:05:19.574+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "tenant_capacity", "database": "nacos_config"}
+2025-07-23T14:05:19.574+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "tenant_capacity"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.839ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_capacity'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.380ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_capacity'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.427ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_capacity'
+	
+2025-07-23T14:05:19.576+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"tenant_capacity","columns":[{"name":"id","type":"bigint(20) unsigned","is_nullable":false,"default_value":"","comment":"主键ID"},{"name":"tenant_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"Tenant ID"},{"name":"quota","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"配额，0表示使用默认值"},{"name":"usage","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"使用量"},{"name":"max_size","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"单个配置大小上限，单位为字节，0表示使用默认值"},{"name":"max_aggr_count","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"聚合子配置最大个数"},{"name":"max_aggr_size","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"单个聚合数据的子配置大小上限，单位为字节，0表示使用默认值"},{"name":"max_history_count","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"最大变更历史数量"},{"name":"gmt_create","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"创建时间"},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"修改时间"}],"indexes":["PRIMARY","uk_tenant_id"],"comment":"租户容量信息表"}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.756ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_capacity'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.349ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_capacity'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.408ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_capacity'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.259ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`tenant_capacity`
+2025-07-23T14:05:19.578+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "tenant_capacity", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:05:19.580+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "tenant_info", "database": "nacos_config"}
+2025-07-23T14:05:19.580+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "tenant_info"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.831ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_info'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.500ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_info'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.528ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_info'
+	
+2025-07-23T14:05:19.582+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"tenant_info","columns":[{"name":"id","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"id"},{"name":"kp","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"kp"},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"tenant_id"},{"name":"tenant_name","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"tenant_name"},{"name":"tenant_desc","type":"varchar(256)","is_nullable":true,"default_value":"","comment":"tenant_desc"},{"name":"create_source","type":"varchar(32)","is_nullable":true,"default_value":"","comment":"create_source"},{"name":"gmt_create","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"创建时间"},{"name":"gmt_modified","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"修改时间"}],"indexes":["idx_tenant_id","PRIMARY","uk_tenant_info_kptenantid"],"comment":"tenant_info"}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.628ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_info'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.309ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_info'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.317ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_info'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[1.097ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`tenant_info`
+2025-07-23T14:05:19.585+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "tenant_info", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:05:19.586+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "users", "database": "nacos_config"}
+2025-07-23T14:05:19.587+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "users"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.737ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'users'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.545ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'users'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.439ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'users'
+	
+2025-07-23T14:05:19.589+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"users","columns":[{"name":"username","type":"varchar(50)","is_nullable":false,"default_value":"","comment":""},{"name":"password","type":"varchar(500)","is_nullable":false,"default_value":"","comment":""},{"name":"enabled","type":"tinyint(1)","is_nullable":false,"default_value":"","comment":""}],"indexes":["PRIMARY"],"comment":""}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.744ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'users'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.759ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'users'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.373ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'users'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.398ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`users`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:194
+[0m[33m[0.225ms] [34;1m[rows:-][0m SELECT * FROM `nacos_config`.`users` LIMIT 1000 OFFSET 0
+
+2025/07/23 14:05:19 [31;1m/root/opscore/internal/service/datamigrate/mysql.go:450 [35;1mError 1146 (42S02): Table 'nacos_config.users' doesn't exist
+[0m[33m[0.390ms] [34;1m[rows:-][0m SHOW COLUMNS FROM `nacos_config`.`users`
+2025-07-23T14:05:19.592+0800	ERROR	datamigrate/service.go:281	Failed to write batch	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "users", "offset": 0, "error": "failed to get table columns: Error 1146 (42S02): Table 'nacos_config.users' doesn't exist"}
+opscore/internal/service/datamigrate.(*MigrationService).executeMigration
+	/root/opscore/internal/service/datamigrate/service.go:281
+2025-07-23T14:05:19.592+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "users", "total_rows": 1, "migrated_rows": 0, "failed_rows": 1}
+2025-07-23T14:05:19.592+0800	ERROR	runtime/asm_amd64.s:1700	Table migration failed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "users", "error": ""}
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1700
+2025-07-23T14:05:19.594+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "a", "database": "qianyi"}
+2025-07-23T14:05:19.594+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "a"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[1.063ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'qianyi' AND TABLE_NAME = 'a'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.652ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'qianyi' AND TABLE_NAME = 'a'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.511ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'qianyi' AND TABLE_NAME = 'a'
+	
+2025-07-23T14:05:19.596+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"a","columns":[{"name":"a","type":"varchar(255)","is_nullable":true,"default_value":"","comment":""}],"indexes":["a_index"],"comment":""}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.824ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'a'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.298ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'a'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.387ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'a'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.286ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `qianyi`.`a`
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:194
+[0m[33m[0.339ms] [34;1m[rows:-][0m SELECT * FROM `qianyi`.`a` LIMIT 1000 OFFSET 0
+
+2025/07/23 14:05:19 [31;1m/root/opscore/internal/service/datamigrate/mysql.go:450 [35;1mError 1146 (42S02): Table 'nacos_config.a' doesn't exist
+[0m[33m[0.670ms] [34;1m[rows:-][0m SHOW COLUMNS FROM `nacos_config`.`a`
+2025-07-23T14:05:19.600+0800	ERROR	datamigrate/service.go:281	Failed to write batch	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "a", "offset": 0, "error": "failed to get table columns: Error 1146 (42S02): Table 'nacos_config.a' doesn't exist"}
+opscore/internal/service/datamigrate.(*MigrationService).executeMigration
+	/root/opscore/internal/service/datamigrate/service.go:281
+2025-07-23T14:05:19.600+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "a", "total_rows": 2, "migrated_rows": 0, "failed_rows": 2}
+2025-07-23T14:05:19.600+0800	ERROR	runtime/asm_amd64.s:1700	Table migration failed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "a", "error": ""}
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1700
+2025-07-23T14:05:19.601+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "b", "database": "qianyi"}
+2025-07-23T14:05:19.601+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "b"}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.881ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'qianyi' AND TABLE_NAME = 'b'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.349ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'qianyi' AND TABLE_NAME = 'b'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.307ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'qianyi' AND TABLE_NAME = 'b'
+	
+2025-07-23T14:05:19.603+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"b","columns":[{"name":"f","type":"varchar(255)","is_nullable":true,"default_value":"","comment":""}],"indexes":null,"comment":""}}
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.583ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'b'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.343ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'b'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.296ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'b'
+	
+
+2025/07/23 14:05:19 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.210ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `qianyi`.`b`
+2025-07-23T14:05:19.605+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "table": "b", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:05:19.609+0800	INFO	runtime/asm_amd64.s:1700	Migration task completed	{"task_id": "10810bb8-070e-4d71-abe1-5b21968d4297", "total_rows": 21, "migrated_rows": 0, "failed_rows": 21}
+2025-07-23T14:06:28.573+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "OPTIONS", "path": "/datamigrate/tasks/10810bb8-070e-4d71-abe1-5b21968d4297/progress", "query": "", "client_ip": "192.168.2.146", "status_code": 204, "latency": 0.000016642, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:06:28 | 204 |     130.537µs |   192.168.2.146 | OPTIONS  "/datamigrate/tasks/10810bb8-070e-4d71-abe1-5b21968d4297/progress"
+2025-07-23T14:06:28.576+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "GET", "path": "/datamigrate/tasks/10810bb8-070e-4d71-abe1-5b21968d4297/progress", "query": "", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.000106258, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:06:28 | 200 |     179.382µs |   192.168.2.146 | GET      "/datamigrate/tasks/10810bb8-070e-4d71-abe1-5b21968d4297/progress"
+2025-07-23T14:06:30.442+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "GET", "path": "/datamigrate/tasks", "query": "page=1&page_size=10", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.001881312, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:06:30 | 200 |    1.972221ms |   192.168.2.146 | GET      "/datamigrate/tasks?page=1&page_size=10"
+signal: terminated
+2025-07-23T14:09:35.185+0800	INFO	runtime/proc.go:283	Starting OpsCore application
+2025-07-23T14:09:35.188+0800	INFO	cmd/main.go:47	Migrating kubernetes database
+2025-07-23T14:09:35.220+0800	INFO	cmd/main.go:52	Migrating kubernetes database
+2025-07-23T14:09:35.242+0800	INFO	runtime/proc.go:283	Server starting	{"port": "8080"}
+2025-07-23T14:09:48.588+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "POST", "path": "/datamigrate/test-connection", "query": "", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.001625633, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:09:48 | 200 |     1.73567ms |   192.168.2.146 | POST     "/datamigrate/test-connection"
+
+2025/07/23 14:09:48 [32m/root/opscore/internal/service/datamigrate/mysql.go:77
+[0m[33m[0.382ms] [34;1m[rows:6][0m SHOW DATABASES
+2025-07-23T14:09:48.614+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "POST", "path": "/datamigrate/databases", "query": "", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.001767383, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:09:48 | 200 |    1.803848ms |   192.168.2.146 | POST     "/datamigrate/databases"
+2025-07-23T14:09:54.507+0800	INFO	gin@v1.10.0/context.go:185	ListTablesHandler 参数	{"req": {"config":{"type":"mysql","host":"172.10.6.8","port":13306,"database":"","username":"root","password":"1q2w3e4r","charset":"utf8mb4"},"database":"nacos_config"}, "type": "mysql"}
+
+2025/07/23 14:09:54 [32m/root/opscore/internal/service/datamigrate/mysql.go:88
+[0m[33m[0.352ms] [34;1m[rows:12][0m SHOW TABLES FROM `nacos_config`
+2025-07-23T14:09:54.509+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "POST", "path": "/datamigrate/tables", "query": "", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.001918012, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:09:54 | 200 |    1.967589ms |   192.168.2.146 | POST     "/datamigrate/tables"
+2025-07-23T14:10:11.968+0800	INFO	datamigrate/api.go:52	Created migration task	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6"}
+2025-07-23T14:10:11.968+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "POST", "path": "/datamigrate/tasks", "query": "", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.003222906, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:10:11 | 200 |    3.245312ms |   192.168.2.146 | POST     "/datamigrate/tasks"
+2025-07-23T14:10:11.997+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "GET", "path": "/datamigrate/tasks", "query": "page=1&page_size=10", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.001644937, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:10:11 | 200 |    1.720639ms |   192.168.2.146 | GET      "/datamigrate/tasks?page=1&page_size=10"
+2025-07-23T14:10:14.148+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "OPTIONS", "path": "/datamigrate/tasks/26ed1a27-aa96-4dd8-ba6c-9533eddba5c6/start", "query": "", "client_ip": "192.168.2.146", "status_code": 204, "latency": 0.000017263, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:10:14 | 204 |     115.712µs |   192.168.2.146 | OPTIONS  "/datamigrate/tasks/26ed1a27-aa96-4dd8-ba6c-9533eddba5c6/start"
+2025-07-23T14:10:14.153+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "POST", "path": "/datamigrate/tasks/26ed1a27-aa96-4dd8-ba6c-9533eddba5c6/start", "query": "", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.002265887, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:10:14 | 200 |    2.330037ms |   192.168.2.146 | POST     "/datamigrate/tasks/26ed1a27-aa96-4dd8-ba6c-9533eddba5c6/start"
+2025-07-23T14:10:14.153+0800	INFO	runtime/asm_amd64.s:1700	Starting migration task	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.448ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.306ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info_aggr`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.239ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info_beta`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.194ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info_tag`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.367ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_tags_relation`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.378ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`group_capacity`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.296ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`his_config_info`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.327ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`permissions`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.505ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`roles`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.256ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`tenant_capacity`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.172ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`tenant_info`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.206ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`users`
+2025-07-23T14:10:14.162+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "GET", "path": "/datamigrate/tasks", "query": "page=1&page_size=10", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.002022255, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:10:14 | 200 |    2.101765ms |   192.168.2.146 | GET      "/datamigrate/tasks?page=1&page_size=10"
+2025-07-23T14:10:14.170+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info", "database": "nacos_config"}
+2025-07-23T14:10:14.170+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[1.105ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.478ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.415ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info'
+	
+2025-07-23T14:10:14.172+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"config_info","columns":[{"name":"id","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"id"},{"name":"data_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":"data_id"},{"name":"group_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":""},{"name":"content","type":"longtext","is_nullable":false,"default_value":"","comment":"content"},{"name":"md5","type":"varchar(32)","is_nullable":true,"default_value":"","comment":"md5"},{"name":"gmt_create","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"创建时间"},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"修改时间"},{"name":"src_user","type":"text","is_nullable":true,"default_value":"","comment":"source user"},{"name":"src_ip","type":"varchar(50)","is_nullable":true,"default_value":"","comment":"source ip"},{"name":"app_name","type":"varchar(128)","is_nullable":true,"default_value":"","comment":""},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"租户字段"},{"name":"c_desc","type":"varchar(256)","is_nullable":true,"default_value":"","comment":""},{"name":"c_use","type":"varchar(64)","is_nullable":true,"default_value":"","comment":""},{"name":"effect","type":"varchar(64)","is_nullable":true,"default_value":"","comment":""},{"name":"type","type":"varchar(64)","is_nullable":true,"default_value":"","comment":""},{"name":"c_schema","type":"text","is_nullable":true,"default_value":"","comment":""},{"name":"encrypted_data_key","type":"text","is_nullable":false,"default_value":"","comment":"秘钥"}],"indexes":["PRIMARY","uk_configinfo_datagrouptenant"],"comment":"config_info"}}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.663ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.286ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.250ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info'
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.252ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:194
+[0m[33m[0.338ms] [34;1m[rows:-][0m SELECT * FROM `nacos_config`.`config_info` LIMIT 1000 OFFSET 0
+
+2025/07/23 14:10:14 [31;1m/root/opscore/internal/service/datamigrate/mysql.go:450 [35;1mError 1146 (42S02): Table 'nacos_config.config_info' doesn't exist
+[0m[33m[0.373ms] [34;1m[rows:-][0m SHOW COLUMNS FROM `nacos_config`.`config_info`
+2025-07-23T14:10:14.175+0800	ERROR	datamigrate/service.go:281	Failed to write batch	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info", "offset": 0, "error": "failed to get table columns: Error 1146 (42S02): Table 'nacos_config.config_info' doesn't exist"}
+opscore/internal/service/datamigrate.(*MigrationService).executeMigration
+	/root/opscore/internal/service/datamigrate/service.go:281
+2025-07-23T14:10:14.175+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info", "total_rows": 17, "migrated_rows": 0, "failed_rows": 17}
+2025-07-23T14:10:14.175+0800	ERROR	runtime/asm_amd64.s:1700	Table migration failed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info", "error": ""}
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1700
+2025-07-23T14:10:14.177+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info_aggr", "database": "nacos_config"}
+2025-07-23T14:10:14.177+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info_aggr"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.904ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_aggr'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.310ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_aggr'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.251ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_aggr'
+	
+2025-07-23T14:10:14.179+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"config_info_aggr","columns":[{"name":"id","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"id"},{"name":"data_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":"data_id"},{"name":"group_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"group_id"},{"name":"datum_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":"datum_id"},{"name":"content","type":"longtext","is_nullable":false,"default_value":"","comment":"内容"},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"","comment":"修改时间"},{"name":"app_name","type":"varchar(128)","is_nullable":true,"default_value":"","comment":""},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"租户字段"}],"indexes":["PRIMARY","uk_configinfoaggr_datagrouptenantdatum"],"comment":"增加租户字段"}}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.475ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_aggr'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.291ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_aggr'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.232ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_aggr'
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.199ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info_aggr`
+2025-07-23T14:10:14.180+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info_aggr", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:10:14.182+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info_beta", "database": "nacos_config"}
+2025-07-23T14:10:14.182+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info_beta"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.703ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_beta'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.258ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_beta'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.281ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_beta'
+	
+2025-07-23T14:10:14.184+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"config_info_beta","columns":[{"name":"id","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"id"},{"name":"data_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":"data_id"},{"name":"group_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"group_id"},{"name":"app_name","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"app_name"},{"name":"content","type":"longtext","is_nullable":false,"default_value":"","comment":"content"},{"name":"beta_ips","type":"varchar(1024)","is_nullable":true,"default_value":"","comment":"betaIps"},{"name":"md5","type":"varchar(32)","is_nullable":true,"default_value":"","comment":"md5"},{"name":"gmt_create","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"创建时间"},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"修改时间"},{"name":"src_user","type":"text","is_nullable":true,"default_value":"","comment":"source user"},{"name":"src_ip","type":"varchar(50)","is_nullable":true,"default_value":"","comment":"source ip"},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"租户字段"},{"name":"encrypted_data_key","type":"text","is_nullable":false,"default_value":"","comment":"秘钥"}],"indexes":["PRIMARY","uk_configinfobeta_datagrouptenant"],"comment":"config_info_beta"}}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.537ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_beta'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.322ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_beta'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.383ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_beta'
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.258ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info_beta`
+2025-07-23T14:10:14.185+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info_beta", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:10:14.187+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info_tag", "database": "nacos_config"}
+2025-07-23T14:10:14.187+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info_tag"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.781ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_tag'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.456ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_tag'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.321ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_tag'
+	
+2025-07-23T14:10:14.189+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"config_info_tag","columns":[{"name":"id","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"id"},{"name":"data_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":"data_id"},{"name":"group_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"group_id"},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"tenant_id"},{"name":"tag_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"tag_id"},{"name":"app_name","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"app_name"},{"name":"content","type":"longtext","is_nullable":false,"default_value":"","comment":"content"},{"name":"md5","type":"varchar(32)","is_nullable":true,"default_value":"","comment":"md5"},{"name":"gmt_create","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"创建时间"},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"修改时间"},{"name":"src_user","type":"text","is_nullable":true,"default_value":"","comment":"source user"},{"name":"src_ip","type":"varchar(50)","is_nullable":true,"default_value":"","comment":"source ip"}],"indexes":["PRIMARY","uk_configinfotag_datagrouptenanttag"],"comment":"config_info_tag"}}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.523ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_tag'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.246ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_tag'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.204ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_info_tag'
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.186ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_info_tag`
+2025-07-23T14:10:14.191+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_info_tag", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:10:14.192+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_tags_relation", "database": "nacos_config"}
+2025-07-23T14:10:14.192+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_tags_relation"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.608ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_tags_relation'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.280ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_tags_relation'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.289ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_tags_relation'
+	
+2025-07-23T14:10:14.193+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"config_tags_relation","columns":[{"name":"id","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"id"},{"name":"tag_name","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"tag_name"},{"name":"tag_type","type":"varchar(64)","is_nullable":true,"default_value":"","comment":"tag_type"},{"name":"data_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":"data_id"},{"name":"group_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"group_id"},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"tenant_id"},{"name":"nid","type":"bigint(20)","is_nullable":false,"default_value":"","comment":""}],"indexes":["idx_tenant_id","PRIMARY","uk_configtagrelation_configidtag"],"comment":"config_tag_relation"}}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.513ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_tags_relation'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.290ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_tags_relation'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.285ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'config_tags_relation'
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.263ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`config_tags_relation`
+2025-07-23T14:10:14.195+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "config_tags_relation", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:10:14.197+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "group_capacity", "database": "nacos_config"}
+2025-07-23T14:10:14.197+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "group_capacity"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.906ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'group_capacity'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.455ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'group_capacity'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.370ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'group_capacity'
+	
+2025-07-23T14:10:14.199+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"group_capacity","columns":[{"name":"id","type":"bigint(20) unsigned","is_nullable":false,"default_value":"","comment":"主键ID"},{"name":"group_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"Group ID，空字符表示整个集群"},{"name":"quota","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"配额，0表示使用默认值"},{"name":"usage","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"使用量"},{"name":"max_size","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"单个配置大小上限，单位为字节，0表示使用默认值"},{"name":"max_aggr_count","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"聚合子配置最大个数，，0表示使用默认值"},{"name":"max_aggr_size","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"单个聚合数据的子配置大小上限，单位为字节，0表示使用默认值"},{"name":"max_history_count","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"最大变更历史数量"},{"name":"gmt_create","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"创建时间"},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"修改时间"}],"indexes":["PRIMARY","uk_group_id"],"comment":"集群、各Group容量信息表"}}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.587ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'group_capacity'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.230ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'group_capacity'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.249ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'group_capacity'
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.266ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`group_capacity`
+2025-07-23T14:10:14.201+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "group_capacity", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:10:14.203+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "his_config_info", "database": "nacos_config"}
+2025-07-23T14:10:14.203+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "his_config_info"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.738ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'his_config_info'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.324ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'his_config_info'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.322ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'his_config_info'
+	
+2025-07-23T14:10:14.204+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"his_config_info","columns":[{"name":"id","type":"bigint(20) unsigned","is_nullable":false,"default_value":"","comment":""},{"name":"nid","type":"bigint(20) unsigned","is_nullable":false,"default_value":"","comment":""},{"name":"data_id","type":"varchar(255)","is_nullable":false,"default_value":"","comment":""},{"name":"group_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":""},{"name":"app_name","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"app_name"},{"name":"content","type":"longtext","is_nullable":false,"default_value":"","comment":""},{"name":"md5","type":"varchar(32)","is_nullable":true,"default_value":"","comment":""},{"name":"gmt_create","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":""},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":""},{"name":"src_user","type":"text","is_nullable":true,"default_value":"","comment":""},{"name":"src_ip","type":"varchar(50)","is_nullable":true,"default_value":"","comment":""},{"name":"op_type","type":"char(10)","is_nullable":true,"default_value":"","comment":""},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"租户字段"},{"name":"encrypted_data_key","type":"text","is_nullable":false,"default_value":"","comment":"秘钥"}],"indexes":["idx_did","idx_gmt_create","idx_gmt_modified","PRIMARY"],"comment":"多租户改造"}}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.978ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'his_config_info'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.635ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'his_config_info'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.286ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'his_config_info'
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.335ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`his_config_info`
+2025-07-23T14:10:14.207+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "his_config_info", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:10:14.208+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "permissions", "database": "nacos_config"}
+2025-07-23T14:10:14.208+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "permissions"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.898ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'permissions'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.481ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'permissions'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.269ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'permissions'
+	
+2025-07-23T14:10:14.210+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"permissions","columns":[{"name":"role","type":"varchar(50)","is_nullable":false,"default_value":"","comment":""},{"name":"resource","type":"varchar(255)","is_nullable":false,"default_value":"","comment":""},{"name":"action","type":"varchar(8)","is_nullable":false,"default_value":"","comment":""}],"indexes":["uk_role_permission"],"comment":""}}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.613ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'permissions'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.423ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'permissions'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.470ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'permissions'
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.230ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`permissions`
+2025-07-23T14:10:14.212+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "permissions", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:10:14.214+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "roles", "database": "nacos_config"}
+2025-07-23T14:10:14.214+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "roles"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[1.012ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'roles'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.485ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'roles'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.297ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'roles'
+	
+2025-07-23T14:10:14.216+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"roles","columns":[{"name":"username","type":"varchar(50)","is_nullable":false,"default_value":"","comment":""},{"name":"role","type":"varchar(50)","is_nullable":false,"default_value":"","comment":""}],"indexes":["idx_user_role"],"comment":""}}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.574ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'roles'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.317ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'roles'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.304ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'roles'
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.169ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`roles`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:194
+[0m[33m[0.118ms] [34;1m[rows:-][0m SELECT * FROM `nacos_config`.`roles` LIMIT 1000 OFFSET 0
+
+2025/07/23 14:10:14 [31;1m/root/opscore/internal/service/datamigrate/mysql.go:450 [35;1mError 1146 (42S02): Table 'nacos_config.roles' doesn't exist
+[0m[33m[0.233ms] [34;1m[rows:-][0m SHOW COLUMNS FROM `nacos_config`.`roles`
+2025-07-23T14:10:14.218+0800	ERROR	datamigrate/service.go:281	Failed to write batch	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "roles", "offset": 0, "error": "failed to get table columns: Error 1146 (42S02): Table 'nacos_config.roles' doesn't exist"}
+opscore/internal/service/datamigrate.(*MigrationService).executeMigration
+	/root/opscore/internal/service/datamigrate/service.go:281
+2025-07-23T14:10:14.218+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "roles", "total_rows": 1, "migrated_rows": 0, "failed_rows": 1}
+2025-07-23T14:10:14.218+0800	ERROR	runtime/asm_amd64.s:1700	Table migration failed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "roles", "error": ""}
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1700
+2025-07-23T14:10:14.220+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "tenant_capacity", "database": "nacos_config"}
+2025-07-23T14:10:14.220+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "tenant_capacity"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.592ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_capacity'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.734ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_capacity'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.381ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_capacity'
+	
+2025-07-23T14:10:14.222+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"tenant_capacity","columns":[{"name":"id","type":"bigint(20) unsigned","is_nullable":false,"default_value":"","comment":"主键ID"},{"name":"tenant_id","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"Tenant ID"},{"name":"quota","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"配额，0表示使用默认值"},{"name":"usage","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"使用量"},{"name":"max_size","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"单个配置大小上限，单位为字节，0表示使用默认值"},{"name":"max_aggr_count","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"聚合子配置最大个数"},{"name":"max_aggr_size","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"单个聚合数据的子配置大小上限，单位为字节，0表示使用默认值"},{"name":"max_history_count","type":"int(10) unsigned","is_nullable":false,"default_value":"0","comment":"最大变更历史数量"},{"name":"gmt_create","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"创建时间"},{"name":"gmt_modified","type":"datetime","is_nullable":false,"default_value":"CURRENT_TIMESTAMP","comment":"修改时间"}],"indexes":["PRIMARY","uk_tenant_id"],"comment":"租户容量信息表"}}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.507ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_capacity'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.278ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_capacity'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.238ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_capacity'
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.182ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`tenant_capacity`
+2025-07-23T14:10:14.223+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "tenant_capacity", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:10:14.225+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "tenant_info", "database": "nacos_config"}
+2025-07-23T14:10:14.225+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "tenant_info"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[1.525ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_info'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.475ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_info'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.257ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_info'
+	
+2025-07-23T14:10:14.228+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"tenant_info","columns":[{"name":"id","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"id"},{"name":"kp","type":"varchar(128)","is_nullable":false,"default_value":"","comment":"kp"},{"name":"tenant_id","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"tenant_id"},{"name":"tenant_name","type":"varchar(128)","is_nullable":true,"default_value":"","comment":"tenant_name"},{"name":"tenant_desc","type":"varchar(256)","is_nullable":true,"default_value":"","comment":"tenant_desc"},{"name":"create_source","type":"varchar(32)","is_nullable":true,"default_value":"","comment":"create_source"},{"name":"gmt_create","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"创建时间"},{"name":"gmt_modified","type":"bigint(20)","is_nullable":false,"default_value":"","comment":"修改时间"}],"indexes":["idx_tenant_id","PRIMARY","uk_tenant_info_kptenantid"],"comment":"tenant_info"}}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.568ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_info'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.347ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_info'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.303ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'tenant_info'
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.187ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`tenant_info`
+2025-07-23T14:10:14.229+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "tenant_info", "total_rows": 0, "migrated_rows": 0, "failed_rows": 0}
+2025-07-23T14:10:14.231+0800	INFO	datamigrate/service.go:281	migrateTable	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "users", "database": "nacos_config"}
+2025-07-23T14:10:14.231+0800	INFO	datamigrate/service.go:281	Starting table migration	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "users"}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.530ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'users'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.219ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'users'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.996ms] [34;1m[rows:1][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'users'
+	
+2025-07-23T14:10:14.233+0800	INFO	datamigrate/service.go:281	sourceSchema	{"sourceSchema": {"name":"users","columns":[{"name":"username","type":"varchar(50)","is_nullable":false,"default_value":"","comment":""},{"name":"password","type":"varchar(500)","is_nullable":false,"default_value":"","comment":""},{"name":"enabled","type":"tinyint(1)","is_nullable":false,"default_value":"","comment":""}],"indexes":["PRIMARY"],"comment":""}}
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:114
+[0m[33m[0.671ms] [34;1m[rows:-][0m 
+		SELECT 
+			COLUMN_NAME,
+			COLUMN_TYPE,
+			IS_NULLABLE,
+			COLUMN_DEFAULT,
+			COLUMN_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'users'
+		ORDER BY ORDINAL_POSITION
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:152
+[0m[33m[0.441ms] [34;1m[rows:-][0m 
+		SELECT INDEX_NAME 
+		FROM INFORMATION_SCHEMA.STATISTICS 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'users'
+		GROUP BY INDEX_NAME
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:175
+[0m[33m[0.296ms] [34;1m[rows:0][0m 
+		SELECT TABLE_COMMENT 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE TABLE_SCHEMA = 'nacos_config' AND TABLE_NAME = 'users'
+	
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:365
+[0m[33m[0.189ms] [34;1m[rows:1][0m SELECT COUNT(*) FROM `nacos_config`.`users`
+
+2025/07/23 14:10:14 [32m/root/opscore/internal/service/datamigrate/mysql.go:194
+[0m[33m[0.127ms] [34;1m[rows:-][0m SELECT * FROM `nacos_config`.`users` LIMIT 1000 OFFSET 0
+
+2025/07/23 14:10:14 [31;1m/root/opscore/internal/service/datamigrate/mysql.go:450 [35;1mError 1146 (42S02): Table 'nacos_config.users' doesn't exist
+[0m[33m[0.239ms] [34;1m[rows:-][0m SHOW COLUMNS FROM `nacos_config`.`users`
+2025-07-23T14:10:14.235+0800	ERROR	datamigrate/service.go:281	Failed to write batch	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "users", "offset": 0, "error": "failed to get table columns: Error 1146 (42S02): Table 'nacos_config.users' doesn't exist"}
+opscore/internal/service/datamigrate.(*MigrationService).executeMigration
+	/root/opscore/internal/service/datamigrate/service.go:281
+2025-07-23T14:10:14.235+0800	INFO	datamigrate/service.go:281	Table migration completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "users", "total_rows": 1, "migrated_rows": 0, "failed_rows": 1}
+2025-07-23T14:10:14.235+0800	ERROR	runtime/asm_amd64.s:1700	Table migration failed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "table": "users", "error": ""}
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1700
+2025-07-23T14:10:14.238+0800	INFO	runtime/asm_amd64.s:1700	Migration task completed	{"task_id": "26ed1a27-aa96-4dd8-ba6c-9533eddba5c6", "total_rows": 19, "migrated_rows": 0, "failed_rows": 19}
+2025-07-23T14:10:30.963+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "OPTIONS", "path": "/datamigrate/tasks/26ed1a27-aa96-4dd8-ba6c-9533eddba5c6/progress", "query": "", "client_ip": "192.168.2.146", "status_code": 204, "latency": 0.000028039, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:10:30 | 204 |     166.864µs |   192.168.2.146 | OPTIONS  "/datamigrate/tasks/26ed1a27-aa96-4dd8-ba6c-9533eddba5c6/progress"
+2025-07-23T14:10:30.967+0800	INFO	gin@v1.10.0/context.go:185	HTTP request	{"method": "GET", "path": "/datamigrate/tasks/26ed1a27-aa96-4dd8-ba6c-9533eddba5c6/progress", "query": "", "client_ip": "192.168.2.146", "status_code": 200, "latency": 0.000148629, "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"}
+[GIN] 2025/07/23 - 14:10:30 | 200 |     216.575µs |   192.168.2.146 | GET      "/datamigrate/tasks/26ed1a27-aa96-4dd8-ba6c-9533eddba5c6/progress"
+signal: terminated

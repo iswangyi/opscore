@@ -1,6 +1,8 @@
 package datamigrate
 
 import (
+	coreError "opscore/error"
+	"opscore/internal/model"
 	"time"
 )
 
@@ -86,6 +88,9 @@ type DataSource interface {
 	// CreateTable 创建表
 	CreateTable(database string, schema *TableSchema) error
 
+	// CreateDatabaseIfNotExists 创建数据库
+	CreateDatabaseIfNotExists(database string) error
+
 	// DropTable 删除表
 	DropTable(database, table string) error
 
@@ -94,26 +99,29 @@ type DataSource interface {
 
 	// Close 关闭连接
 	Close() error
+
 }
+
+
 
 // DataSourceFactory 数据源工厂
 type DataSourceFactory struct{}
 
 // NewDataSource 创建数据源实例
-func (f *DataSourceFactory) NewDataSource(sourceType DataSourceType) (DataSource, error) {
+func (f *DataSourceFactory) NewDataSource(sourceType model.DataSourceType) (DataSource, error) {
 	switch sourceType {
-	case DataSourceTypeMySQL:
+	case model.DataSourceTypeMySQL:
 		return &MySQLDataSource{}, nil
-	case DataSourceTypePostgreSQL:
+	case model.DataSourceTypePostgreSQL:
 		// TODO: 实现 PostgreSQL 数据源
-		return nil, ErrUnsupportedDataSource
-	case DataSourceTypeMongoDB:
+		return nil, coreError.ErrUnsupportedDataSource
+	case model.DataSourceTypeMongoDB:
 		// TODO: 实现 MongoDB 数据源
-		return nil, ErrUnsupportedDataSource
-	case DataSourceTypeMinIO:
+		return nil, coreError.ErrUnsupportedDataSource
+	case model.DataSourceTypeMinIO:
 		// TODO: 实现 MinIO 数据源
-		return nil, ErrUnsupportedDataSource
+		return nil, coreError.ErrUnsupportedDataSource
 	default:
-		return nil, ErrUnsupportedDataSource
+		return nil, coreError.ErrUnsupportedDataSource
 	}
 }

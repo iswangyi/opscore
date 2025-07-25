@@ -544,3 +544,62 @@ export const kubernetesAPI = {
     }),
 
 }
+
+/**
+ * 数据迁移 API
+ */
+export const datamigrateAPI = {
+  // 测试数据源连接
+  testConnection: (config) =>
+    fetchAPI("/datamigrate/test-connection", {
+      method: "POST",
+      body: JSON.stringify(config),
+    }),
+
+  // 列出数据库
+  listDatabases: (config) =>
+    fetchAPI("/datamigrate/databases", {
+      method: "POST",
+      body: JSON.stringify(config),
+    }),
+
+  // 列出表
+  listTables: (config, database) =>
+    fetchAPI("/datamigrate/tables", {
+      method: "POST",
+      body: JSON.stringify({ config, database }),
+    }),
+
+  // 创建迁移任务
+  createTask: (taskData) =>
+    fetchAPI("/datamigrate/tasks", {
+      method: "POST",
+      body: JSON.stringify(taskData),
+    }),
+
+  // 启动迁移任务
+  startTask: (taskId) =>
+    fetchAPI(`/datamigrate/tasks/${taskId}/start`, {
+      method: "POST",
+    }),
+
+  // 获取任务进度
+  getTaskProgress: (taskId) =>
+    fetchAPI(`/datamigrate/tasks/${taskId}/progress`),
+
+  // 列出所有任务
+  listTasks: (page = 1, pageSize = 10) =>
+    fetchAPI(`/datamigrate/tasks?page=${page}&page_size=${pageSize}`),
+
+  // 取消任务
+  cancelTask: (taskId) =>
+    fetchAPI(`/datamigrate/tasks/${taskId}/cancel`, {
+      method: "POST",
+    }),
+
+  compare: (data) =>
+    fetchAPI("/datamigrate/compare", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+};

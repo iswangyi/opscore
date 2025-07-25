@@ -79,6 +79,11 @@ export default function DashboardLayout({ children }) {
       icon: Cloud,
     },
     {
+      title: "数据迁移",
+      href: "/dashboard/datamigrate",
+      icon: Database,
+    },
+    {
       title: "设置",
       href: "/dashboard/settings",
       icon: Settings,
@@ -133,7 +138,7 @@ export default function DashboardLayout({ children }) {
         </div>
       </header>
 
-      <div className="container flex-1 items-start md:grid md:grid-cols-[220px_1fr] md:gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
+      <div className="flex-1 w-full items-start md:grid md:grid-cols-[220px_1fr] md:gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
         {/* 侧边导航 - 移动版 */}
         {isMobileMenuOpen && (
           <aside className="fixed inset-0 top-16 z-30 h-[calc(100vh-4rem)] w-full overflow-y-auto border-r bg-background p-6 md:hidden">
@@ -211,7 +216,7 @@ export default function DashboardLayout({ children }) {
         </aside>
 
         {/* 主内容区 */}
-        <main className="flex w-full flex-col overflow-hidden p-6 md:py-8">{children}</main>
+        <main className="flex w-full flex-1 flex-col overflow-hidden p-6 md:py-8">{children}</main>
       </div>
     </div>
   )
